@@ -471,14 +471,18 @@ class ArgParseDirective(Directive):
 
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
+            _elements = attr_name.split('.')
             try:
-                mod = __import__(module_name, globals(), locals(), [attr_name])
+                mod = __import__(module_name, globals(), locals(), [_elements[0]])
             except ImportError:
-                raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}')
-
-            if not hasattr(mod, attr_name):
-                raise self.error(('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?') % (module_name, attr_name))
-            func = getattr(mod, attr_name)
+                raise self.error(f'Failed to import "{_elements[0]}" from "{module_name}".\n{sys.exc_info()[1]}')
+            obj = mod
+            for i in _elements:
+                if not hasattr(obj, i):
+                    raise self.error(f'"{obj}" has no attribute "{i}"\n'
+                                      'Incorrect argparse :module: or :func: values?')
+                obj = getattr(obj, i)
+            func = obj
 
         if isinstance(func, ArgumentParser):
             parser = func
