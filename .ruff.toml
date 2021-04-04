@@ -39,6 +39,9 @@ ignore = [
 "test/sample-directive-special.py" = [
     "N999",  # invalid module name
 ]
+"test/sample-inside-class.py" = [
+    "N999",  # invalid module name
+]
 
 [format]
 preview = true

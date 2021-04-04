@@ -719,6 +719,28 @@ class ArgParseDirective(SphinxDirective):
         item = str(item).replace('"', '').replace("'", '')
         return item == '==SUPPRESS=='
 
+    def _get_parser(self, obj, path):
+        try:
+            for attr in path.split('.'):
+                if isinstance(obj, dict):
+                    obj = obj[attr]
+                else:
+                    obj = getattr(obj, attr)
+        except (KeyError, AttributeError) as exc:
+            msg = (
+                f'"{obj}" has no key/attribute "{attr} (path: {path})"\n'
+                f'Incorrect argparse :module: or :func: values?'
+            )
+            raise self.error(msg) from exc
+        if isinstance(obj, ArgumentParser):
+            parser = obj
+        elif 'passparser' in self.options:
+            parser = ArgumentParser()
+            obj(parser)
+        else:
+            parser = obj()
+        return parser
+
     def run(self):
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
@@ -734,7 +756,7 @@ class ArgParseDirective(SphinxDirective):
             exec(code, mod)
             module_name = None
             attr_name = self.options['func']
-            func = mod[attr_name]
+            parser = self._get_parser(mod, attr_name)
         else:
             msg = ':module: and :func: should be specified, or :ref:, or :filename: and :func:'
             raise self.error(msg)
@@ -750,22 +772,8 @@ class ArgParseDirective(SphinxDirective):
                         f'{sys.exc_info()[1]}'
                     )
                     raise self.error(msg) from exc
+                parser = self._get_parser(mod, attr_name)
 
-                if not hasattr(mod, attr_name):
-                    msg = (
-                        f'Module "{module_name}" has no attribute "{attr_name}"\n'
-                        f'Incorrect argparse :module: or :func: values?'
-                    )
-                    raise self.error(msg)
-                func = getattr(mod, attr_name)
-
-        if isinstance(func, ArgumentParser):
-            parser = func
-        elif 'passparser' in self.options:
-            parser = ArgumentParser()
-            func(parser)
-        else:
-            parser = func()
         if 'path' not in self.options:
             self.options['path'] = ''
         path = str(self.options['path'])
