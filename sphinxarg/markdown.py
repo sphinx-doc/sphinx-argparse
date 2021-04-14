@@ -20,9 +20,9 @@ def customWalker(node, space=''):
     >>> customWalker(content)
     document
         heading
-            text	Some big text block
+            text    Some big text block
         paragraph
-            text	with content
+            text    with content
 
     Spaces are used to convey nesting
     """
@@ -252,7 +252,11 @@ def listNode(node):
     if node.list_data['type'] == u'bullet':
         o = nodes.bullet_list(bullet=node.list_data['bullet_char'])
     else:
-        o = nodes.enumerated_list(suffix=node.list_data['delimiter'], enumtype='arabic', start=node.list_data['start'])
+        o = nodes.enumerated_list(
+            suffix=node.list_data['delimiter'],
+            enumtype='arabic',
+            start=node.list_data['start'],
+        )
     for n in MarkDown(node):
         o += n
     return o

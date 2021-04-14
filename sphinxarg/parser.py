@@ -16,8 +16,8 @@ def parser_navigate(parser_result, path, current_path=None):
         return parser_result
     if 'children' not in parser_result:
         raise NavigationException(
-            'Current parser has no child elements.  (path: %s)' %
-            ' '.join(current_path))
+            'Current parser has no child elements.  (path: %s)' % ' '.join(current_path)
+        )
     next_hop = path.pop(0)
     for child in parser_result['children']:
         # identifer is only used for aliased subcommands
@@ -26,8 +26,9 @@ def parser_navigate(parser_result, path, current_path=None):
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
     raise NavigationException(
-        'Current parser has no child element with name: %s  (path: %s)' % (
-            next_hop, ' '.join(current_path)))
+        'Current parser has no child element with name: %s  (path: %s)'
+        % (next_hop, ' '.join(current_path))
+    )
 
 
 def _try_add_parser_attribute(data, parser, attribname):
@@ -46,8 +47,9 @@ def _format_usage_without_prefix(parser):
     the 'usage: ' prefix.
     """
     fmt = parser._get_formatter()
-    fmt.add_usage(parser.usage, parser._actions,
-                  parser._mutually_exclusive_groups, prefix='')
+    fmt.add_usage(
+        parser.usage, parser._actions, parser._mutually_exclusive_groups, prefix=''
+    )
     return fmt.format_help().strip()
 
 
@@ -85,7 +87,9 @@ def parse_parser(parser, data=None, **kwargs):
             subalias = subsection_alias[subaction]
             subaction.prog = '%s %s' % (parser.prog, name)
             subdata = {
-                'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
+                'name': name
+                if not subalias
+                else '%s (%s)' % (name, ', '.join(subalias)),
                 'help': helps.get(name, ''),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
@@ -99,7 +103,10 @@ def parse_parser(parser, data=None, **kwargs):
     if 'skip_default_values' in kwargs and kwargs['skip_default_values'] is True:
         show_defaults = False
     show_defaults_const = show_defaults
-    if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
+    if (
+        'skip_default_const_values' in kwargs
+        and kwargs['skip_default_const_values'] is True
+    ):
         show_defaults_const = False
 
     # argparse stores the different groups as a list in parser._action_groups
@@ -115,7 +122,11 @@ def parse_parser(parser, data=None, **kwargs):
 
             # Quote default values for string/None types
             default = action.default
-            if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+            if (
+                action.default not in ['', None, True, False]
+                and action.type in [None, str]
+                and isinstance(action.default, str)
+            ):
                 default = '"%s"' % default
 
             # fill in any formatters, like %(default)s
@@ -142,13 +153,13 @@ def parse_parser(parser, data=None, **kwargs):
                 option = {
                     'name': name,
                     'default': default if show_defaults_const else '==SUPPRESS==',
-                    'help': helpStr
+                    'help': helpStr,
                 }
             else:
                 option = {
                     'name': name,
                     'default': default if show_defaults else '==SUPPRESS==',
-                    'help': helpStr
+                    'help': helpStr,
                 }
             if action.choices:
                 option['choices'] = action.choices
@@ -164,9 +175,11 @@ def parse_parser(parser, data=None, **kwargs):
         if action_group.title == 'positional arguments':
             action_group.title = 'Positional Arguments'
 
-        group = {'title': action_group.title,
-                 'description': action_group.description,
-                 'options': options_list}
+        group = {
+            'title': action_group.title,
+            'description': action_group.description,
+            'options': options_list,
+        }
 
         action_groups.append(group)
 

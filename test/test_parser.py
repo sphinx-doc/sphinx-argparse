@@ -11,15 +11,8 @@ def test_parse_options():
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
-        {
-            'name': ['--foo'],
-            'default': False,
-            'help': 'foo help'
-        }, {
-            'name': ['--bar'],
-            'default': False,
-            'help': ''
-        }
+        {'name': ['--foo'], 'default': False, 'help': 'foo help'},
+        {'name': ['--bar'], 'default': False, 'help': ''},
     ]
 
 
@@ -30,11 +23,7 @@ def test_parse_default():
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
-        {
-            'name': ['--foo'],
-            'default': '"123"',
-            'help': ''
-        }
+        {'name': ['--foo'], 'default': '"123"', 'help': ''}
     ]
 
 
@@ -49,7 +38,7 @@ def test_parse_arg_choices():
             'name': ['move'],
             'help': '',
             'choices': ['rock', 'paper', 'scissors'],
-            'default': None
+            'default': None,
         }
     ]
 
@@ -65,7 +54,7 @@ def test_parse_opt_choices():
             'name': ['--move'],
             'default': None,
             'help': '',
-            'choices': ['rock', 'paper', 'scissors']
+            'choices': ['rock', 'paper', 'scissors'],
         }
     ]
 
@@ -77,11 +66,7 @@ def test_parse_default_skip_default():
     data = parse_parser(parser, skip_default_values=True)
 
     assert data['action_groups'][0]['options'] == [
-        {
-            'name': ['--foo'],
-            'default': '==SUPPRESS==',
-            'help': ''
-        }
+        {'name': ['--foo'], 'default': '==SUPPRESS==', 'help': ''}
     ]
 
 
@@ -93,15 +78,8 @@ def test_parse_positional():
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
-        {
-            'name': ['foo'],
-            'help': 'foo help',
-            'default': False
-        }, {
-            'name': ['bar'],
-            'help': '',
-            'default': False
-        }
+        {'name': ['foo'], 'help': 'foo help', 'default': False},
+        {'name': ['bar'], 'help': '', 'default': False},
     ]
 
 
@@ -117,15 +95,8 @@ def test_parse_description():
     assert data['epilog'] == 'epilogged'
 
     assert data['action_groups'][0]['options'] == [
-        {
-            'name': ['foo'],
-            'help': 'foo help',
-            'default': False
-        }, {
-            'name': ['bar'],
-            'help': '',
-            'default': False
-        }
+        {'name': ['foo'], 'help': 'foo help', 'default': False},
+        {'name': ['bar'], 'help': '', 'default': False},
     ]
 
 
@@ -138,20 +109,15 @@ def test_parse_nested():
 
     subparser = subparsers.add_parser('install', help='install help')
     subparser.add_argument('ref', type=str, help='foo1 help')
-    subparser.add_argument('--upgrade', action='store_true', default=False, help='foo2 help')
+    subparser.add_argument(
+        '--upgrade', action='store_true', default=False, help='foo2 help'
+    )
 
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
-        {
-            'name': ['foo'],
-            'help': 'foo help',
-            'default': False
-        }, {
-            'name': ['bar'],
-            'help': '',
-            'default': False
-        }
+        {'name': ['foo'], 'help': 'foo help', 'default': False},
+        {'name': ['bar'], 'help': '', 'default': False},
     ]
 
     assert data['children'] == [
@@ -165,30 +131,23 @@ def test_parse_nested():
                     'title': 'Positional Arguments',
                     'description': None,
                     'options': [
-                        {
-                            'name': ['ref'],
-                            'help': 'foo1 help',
-                            'default': None
-                        }
-                    ]
+                        {'name': ['ref'], 'help': 'foo1 help', 'default': None}
+                    ],
                 },
                 {
                     'description': None,
                     'title': 'Named Arguments',
                     'options': [
-                        {
-                            'name': ['--upgrade'],
-                            'default': False,
-                            'help': 'foo2 help'
-                        }
-                    ]
-                }
-            ]
+                        {'name': ['--upgrade'], 'default': False, 'help': 'foo2 help'}
+                    ],
+                },
+            ],
         }
     ]
 
 
 if six.PY3:
+
     def test_parse_nested_with_alias():
         parser = argparse.ArgumentParser(prog='under-test')
         parser.add_argument('foo', default=False, help='foo help')
@@ -198,20 +157,15 @@ if six.PY3:
 
         subparser = subparsers.add_parser('install', aliases=['i'], help='install help')
         subparser.add_argument('ref', type=str, help='foo1 help')
-        subparser.add_argument('--upgrade', action='store_true', default=False, help='foo2 help')
+        subparser.add_argument(
+            '--upgrade', action='store_true', default=False, help='foo2 help'
+        )
 
         data = parse_parser(parser)
 
         assert data['action_groups'][0]['options'] == [
-            {
-                'name': ['foo'],
-                'help': 'foo help',
-                'default': False
-            }, {
-                'name': ['bar'],
-                'help': '',
-                'default': False
-            }
+            {'name': ['foo'], 'help': 'foo help', 'default': False},
+            {'name': ['bar'], 'help': '', 'default': False},
         ]
 
         assert data['children'] == [
@@ -226,12 +180,8 @@ if six.PY3:
                         'title': 'Positional Arguments',
                         'description': None,
                         'options': [
-                            {
-                                'name': ['ref'],
-                                'help': 'foo1 help',
-                                'default': None
-                            }
-                        ]
+                            {'name': ['ref'], 'help': 'foo1 help', 'default': None}
+                        ],
                     },
                     {
                         'description': None,
@@ -240,11 +190,11 @@ if six.PY3:
                             {
                                 'name': ['--upgrade'],
                                 'default': False,
-                                'help': 'foo2 help'
+                                'help': 'foo2 help',
                             }
-                        ]
-                    }
-                ]
+                        ],
+                    },
+                ],
             }
         ]
 
@@ -258,12 +208,13 @@ if six.PY3:
 
         data2 = parser_navigate(data, 'level1')
 
-        assert(data2 == {
+        assert data2 == {
             'bare_usage': 'under-test level1 [-h]',
             'help': '',
             'usage': 'usage: under-test level1 [-h]',
             'name': 'level1 (l1)',
-            'identifier': 'level1'})
+            'identifier': 'level1',
+        }
 
 
 def test_parse_nested_traversal():
@@ -286,15 +237,8 @@ def test_parse_nested_traversal():
     data3 = parser_navigate(data, 'level1 level2 level3')
 
     assert data3['action_groups'][0]['options'] == [
-        {
-            'name': ['foo'],
-            'help': 'foo help',
-            'default': None
-        }, {
-            'name': ['bar'],
-            'help': '',
-            'default': None
-        }
+        {'name': ['foo'], 'help': 'foo help', 'default': None},
+        {'name': ['bar'], 'help': '', 'default': None},
     ]
 
     data2 = parser_navigate(data, 'level1 level2')
@@ -309,18 +253,11 @@ def test_parse_nested_traversal():
                     'title': 'Positional Arguments',
                     'description': None,
                     'options': [
-                        {
-                            'default': None,
-                            'name': ['foo'],
-                            'help': 'foo help'
-                        }, {
-                            'name': ['bar'],
-                            'help': '',
-                            'default': None
-                        }
-                    ]
+                        {'default': None, 'name': ['foo'], 'help': 'foo help'},
+                        {'name': ['bar'], 'help': '', 'default': None},
+                    ],
                 }
-            ]
+            ],
         }
     ]
 
@@ -339,7 +276,7 @@ def test_fill_in_default_prog():
         {
             'default': '"foo"',
             'name': ['bar'],
-            'help': 'test_fill_in_default_prog (default: "foo")'
+            'help': 'test_fill_in_default_prog (default: "foo")',
         }
     ]
 
@@ -350,14 +287,16 @@ def test_string_quoting():
     This prevents things like '--optLSFConf=-q short' when '--optLSFConf="-q short"' is correct.
     """
     parser = argparse.ArgumentParser(prog='test_string_quoting_prog')
-    parser.add_argument('--bar', default='foo bar', help='%(prog)s (default: %(default)s)')
+    parser.add_argument(
+        '--bar', default='foo bar', help='%(prog)s (default: %(default)s)'
+    )
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
         {
             'default': '"foo bar"',
             'name': ['--bar'],
-            'help': 'test_string_quoting_prog (default: "foo bar")'
+            'help': 'test_string_quoting_prog (default: "foo bar")',
         }
     ]
 
@@ -376,15 +315,18 @@ def test_parse_groups():
             'description': None,
             'options': [
                 {'default': False, 'help': 'foo help', 'name': ['--foo']},
-                {'default': False, 'help': '', 'name': ['--bar']}],
-            'title': 'Named Arguments'},
+                {'default': False, 'help': '', 'name': ['--bar']},
+            ],
+            'title': 'Named Arguments',
+        },
         {
             'description': None,
             'options': [
                 {'default': None, 'help': 'option #1', 'name': ['--option1']},
-                {'default': None, 'help': 'option #2', 'name': ['--option2']}],
-            'title': 'Group 1'
-        }
+                {'default': None, 'help': 'option #2', 'name': ['--option2']},
+            ],
+            'title': 'Group 1',
+        },
     ]
 
 
@@ -413,13 +355,70 @@ def test_action_groups_with_subcommands():
     data = parse_parser(parser)
 
     assert data['action_groups'] == [
-        {'options': [{'default': None, 'name': ['foo2 metavar'], 'help': 'foo2 help'}], 'description': None, 'title': 'Positional Arguments'},
-        {'options': [{'default': None, 'name': ['--foo'], 'help': 'foo help'}], 'description': None, 'title': 'Named Arguments'},
-        {'options': [{'default': None, 'name': ['--bar'], 'help': 'bar help'}, {'default': None, 'name': ['quux'], 'help': 'quux help'}], 'description': None, 'title': 'bar options'},
-        {'options': [{'default': None, 'name': ['--blah'], 'help': 'blah help'}, {'default': None, 'name': ['sniggly'], 'help': 'sniggly help'}], 'description': None, 'title': 'bla options'}
+        {
+            'options': [
+                {'default': None, 'name': ['foo2 metavar'], 'help': 'foo2 help'}
+            ],
+            'description': None,
+            'title': 'Positional Arguments',
+        },
+        {
+            'options': [{'default': None, 'name': ['--foo'], 'help': 'foo help'}],
+            'description': None,
+            'title': 'Named Arguments',
+        },
+        {
+            'options': [
+                {'default': None, 'name': ['--bar'], 'help': 'bar help'},
+                {'default': None, 'name': ['quux'], 'help': 'quux help'},
+            ],
+            'description': None,
+            'title': 'bar options',
+        },
+        {
+            'options': [
+                {'default': None, 'name': ['--blah'], 'help': 'blah help'},
+                {'default': None, 'name': ['sniggly'], 'help': 'sniggly help'},
+            ],
+            'description': None,
+            'title': 'bla options',
+        },
     ]
 
     assert data['children'] == [
-        {'usage': 'usage: foo A [-h] baz', 'action_groups': [{'options': [{'default': None, 'name': ['baz'], 'help': 'An integer'}], 'description': None, 'title': 'Positional Arguments'}], 'bare_usage': 'foo A [-h] baz', 'name': 'A', 'help': 'A subparser'},
-        {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]', 'action_groups': [{'options': [{'default': None, 'choices': 'XYZ', 'name': ['--barg'], 'help': 'A list of choices'}], 'description': None, 'title': 'Named Arguments'}], 'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]', 'name': 'B', 'help': 'B subparser'}
+        {
+            'usage': 'usage: foo A [-h] baz',
+            'action_groups': [
+                {
+                    'options': [
+                        {'default': None, 'name': ['baz'], 'help': 'An integer'}
+                    ],
+                    'description': None,
+                    'title': 'Positional Arguments',
+                }
+            ],
+            'bare_usage': 'foo A [-h] baz',
+            'name': 'A',
+            'help': 'A subparser',
+        },
+        {
+            'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]',
+            'action_groups': [
+                {
+                    'options': [
+                        {
+                            'default': None,
+                            'choices': 'XYZ',
+                            'name': ['--barg'],
+                            'help': 'A list of choices',
+                        }
+                    ],
+                    'description': None,
+                    'title': 'Named Arguments',
+                }
+            ],
+            'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]',
+            'name': 'B',
+            'help': 'B subparser',
+        },
     ]
