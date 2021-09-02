@@ -100,13 +100,10 @@ def parse_parser(parser, data=None, **kwargs):
             data.setdefault('children', []).append(subdata)
 
     show_defaults = True
-    if 'skip_default_values' in kwargs and kwargs['skip_default_values'] is True:
+    if kwargs.get('skip_default_values', False) is True:
         show_defaults = False
     show_defaults_const = show_defaults
-    if (
-        'skip_default_const_values' in kwargs
-        and kwargs['skip_default_const_values'] is True
-    ):
+    if kwargs.get('skip_default_const_values', False) is True:
         show_defaults_const = False
 
     # argparse stores the different groups as a list in parser._action_groups
