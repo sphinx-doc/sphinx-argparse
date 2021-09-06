@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx-argparse"
-version = "0.3.0"
+version = "0.3.1"
 description = "A sphinx extension that automatically documents argparse commands and options"
 authors = ["Ash Berlin-Taylor <ash_github@firemirror.com>"]
 license = "MIT"
