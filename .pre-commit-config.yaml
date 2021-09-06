@@ -1,0 +1,59 @@
+# To install the git pre-commit hook run:
+#   pre-commit install
+# To update the pre-commit hooks run:
+#   pre-commit install-hooks
+exclude: '^(\.bumpversion\.cfg)(/|$)'
+minimum_pre_commit_version: "1.20.0"
+repos:
+  - repo: meta
+    hooks:
+      - id: identity
+      - id: check-hooks-apply
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: check-builtin-literals
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      # - id: check-executables-have-shebangs
+      - id: trailing-whitespace
+      - id: fix-encoding-pragma
+        args:
+          - --remove
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.18.1
+    hooks:
+      - id: pyupgrade
+        args: ["--py36-plus"]
+  - repo: https://github.com/ikamensh/flynt/
+    rev: '0.63'
+    hooks:
+    - id: flynt
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        language: system
+        entry: poetry run mypy
+        types: [python]
+        exclude: ^docs/
+      - id: black
+        name: black
+        language: system
+        entry: poetry run black
+        types: [python]
+        exclude: ^docs/conf\.py$
+      - id: flake8
+        name: flake8
+        language: system
+        entry: poetry run flake8
+        types: [python]
+        exclude: ^docs/conf\.py$
+      - id: isort
+        name: isort
+        language: system
+        entry: poetry run isort
+        types: [python]
