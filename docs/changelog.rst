@@ -2,6 +2,12 @@
 Change log
 **********
 
+0.3.0
+#####
+
+ * First release from ashb/sphinx-argparse
+ * Declare that parallel builds are supported (issue #131).
+
 0.2.5
 #####
 
