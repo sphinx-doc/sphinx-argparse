@@ -6,6 +6,7 @@ authors = ["Ash Berlin-Taylor <ash_github@firemirror.com>"]
 license = "MIT"
 packages = [
   { include = "sphinxarg" },
+  { include = "test", format = "sdist" },
 ]
 
 [tool.poetry.dependencies]
