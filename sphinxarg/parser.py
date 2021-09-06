@@ -15,9 +15,7 @@ def parser_navigate(parser_result, path, current_path=None):
     if len(path) == 0:
         return parser_result
     if 'children' not in parser_result:
-        raise NavigationException(
-            'Current parser has no child elements.  (path: %s)' % ' '.join(current_path)
-        )
+        raise NavigationException(f"Current parser has no child elements.  (path: {' '.join(current_path)})")
     next_hop = path.pop(0)
     for child in parser_result['children']:
         # identifer is only used for aliased subcommands
@@ -25,10 +23,7 @@ def parser_navigate(parser_result, path, current_path=None):
         if identifier == next_hop:
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
-    raise NavigationException(
-        'Current parser has no child element with name: %s  (path: %s)'
-        % (next_hop, ' '.join(current_path))
-    )
+    raise NavigationException(f"Current parser has no child element with name: {next_hop}  (path: {' '.join(current_path)})")
 
 
 def _try_add_parser_attribute(data, parser, attribname):
@@ -47,9 +42,7 @@ def _format_usage_without_prefix(parser):
     the 'usage: ' prefix.
     """
     fmt = parser._get_formatter()
-    fmt.add_usage(
-        parser.usage, parser._actions, parser._mutually_exclusive_groups, prefix=''
-    )
+    fmt.add_usage(parser.usage, parser._actions, parser._mutually_exclusive_groups, prefix='')
     return fmt.format_help().strip()
 
 
@@ -85,11 +78,9 @@ def parse_parser(parser, data=None, **kwargs):
             if name in subsection_alias_names:
                 continue
             subalias = subsection_alias[subaction]
-            subaction.prog = '%s %s' % (parser.prog, name)
+            subaction.prog = f'{parser.prog} {name}'
             subdata = {
-                'name': name
-                if not subalias
-                else '%s (%s)' % (name, ', '.join(subalias)),
+                'name': name if not subalias else f"{name} ({', '.join(subalias)})",
                 'help': helps.get(name, ''),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
@@ -119,20 +110,16 @@ def parse_parser(parser, data=None, **kwargs):
 
             # Quote default values for string/None types
             default = action.default
-            if (
-                action.default not in ['', None, True, False]
-                and action.type in [None, str]
-                and isinstance(action.default, str)
-            ):
-                default = '"%s"' % default
+            if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+                default = f'"{default}"'
 
             # fill in any formatters, like %(default)s
-            formatDict = dict(vars(action), prog=data.get('prog', ''), default=default)
-            formatDict['default'] = default
-            helpStr = action.help or ''  # Ensure we don't print None
+            format_dict = dict(vars(action), prog=data.get('prog', ''), default=default)
+            format_dict['default'] = default
+            help_str = action.help or ''  # Ensure we don't print None
             try:
-                helpStr = helpStr % formatDict
-            except:
+                help_str = help_str % format_dict
+            except Exception:
                 pass
 
             # Options have the option_strings set, positional arguments don't
@@ -150,13 +137,13 @@ def parse_parser(parser, data=None, **kwargs):
                 option = {
                     'name': name,
                     'default': default if show_defaults_const else '==SUPPRESS==',
-                    'help': helpStr,
+                    'help': help_str,
                 }
             else:
                 option = {
                     'name': name,
                     'default': default if show_defaults else '==SUPPRESS==',
-                    'help': helpStr,
+                    'help': help_str,
                 }
             if action.choices:
                 option['choices'] = action.choices

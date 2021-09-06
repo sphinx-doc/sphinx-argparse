@@ -4,7 +4,7 @@ Examples
 Example documentation structure
 -------------------------------
 
-Here is an example structure for the documentation of a complex command with many subcommands. 
+Here is an example structure for the documentation of a complex command with many subcommands.
 You are free to use any structure, but this may be a good starting point.
 
 File "index.rst"::

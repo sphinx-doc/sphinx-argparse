@@ -10,14 +10,14 @@ from docutils import nodes
 from docutils.utils.code_analyzer import Lexer
 
 
-def customWalker(node, space=''):
+def custom_walker(node, space=''):
     """
     A convenience function to ease debugging. It will print the node structure that's returned from CommonMark
 
     The usage would be something like:
 
     >>> content = Parser().parse('Some big text block\n===================\n\nwith content\n')
-    >>> customWalker(content)
+    >>> custom_walker(content)
     document
         heading
             text    Some big text block
@@ -29,18 +29,18 @@ def customWalker(node, space=''):
     txt = ''
     try:
         txt = node.literal
-    except:
+    except Exception:
         pass
 
     if txt is None or txt == '':
-        print('{}{}'.format(space, node.t))
+        print(f'{space}{node.t}')
     else:
-        print('{}{}\t{}'.format(space, node.t, txt))
+        print(f'{space}{node.t}\t{txt}')
 
     cur = node.first_child
     if cur:
         while cur is not None:
-            customWalker(cur, space + '    ')
+            custom_walker(cur, space + '    ')
             cur = cur.nxt
 
 
@@ -53,7 +53,7 @@ def paragraph(node):
         text = node.string_content
     o = nodes.paragraph('', ' '.join(text))
     o.line = node.sourcepos[0][0]
-    for n in MarkDown(node):
+    for n in markdown(node):
         o.append(n)
 
     return o
@@ -88,7 +88,7 @@ def reference(node):
     o['refuri'] = node.destination
     if node.title:
         o['name'] = node.title
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -98,7 +98,7 @@ def emphasis(node):
     An italicized section
     """
     o = nodes.emphasis()
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -108,7 +108,7 @@ def strong(node):
     A bolded section
     """
     o = nodes.strong()
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -123,7 +123,7 @@ def literal(node):
             l = Lexer(node.literal, node.info, tokennames="long")
             for _ in l:
                 rendered.append(node.inline(classes=_[0], text=_[1]))
-    except:
+    except Exception:
         pass
 
     classes = ['code']
@@ -136,7 +136,7 @@ def literal(node):
     else:
         o = nodes.literal(text=node.literal, classes=classes)
 
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -151,7 +151,7 @@ def literal_block(node):
             l = Lexer(node.literal, node.info, tokennames="long")
             for _ in l:
                 rendered.append(node.inline(classes=_[0], text=_[1]))
-    except:
+    except Exception:
         pass
 
     classes = ['code']
@@ -165,7 +165,7 @@ def literal_block(node):
         o = nodes.literal_block(text=node.literal, classes=classes)
 
     o.line = node.sourcepos[0][0]
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -177,7 +177,7 @@ def raw(node):
     o = nodes.raw(node.literal, node.literal, format='html')
     if node.sourcepos is not None:
         o.line = node.sourcepos[0][0]
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -203,10 +203,10 @@ def section(node):
     """
     title = ''  # All sections need an id
     if node.first_child is not None:
-        if node.first_child.t == u'heading':
+        if node.first_child.t == 'heading':
             title = node.first_child.first_child.literal
     o = nodes.section(ids=[title], names=[title])
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -217,7 +217,7 @@ def block_quote(node):
     """
     o = nodes.block_quote()
     o.line = node.sourcepos[0][0]
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
@@ -234,22 +234,22 @@ def image(node):
     return o
 
 
-def listItem(node):
+def list_item(node):
     """
     An item in a list
     """
     o = nodes.list_item()
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
 
-def listNode(node):
+def list_node(node):
     """
     A list (numbered or not)
     For numbered lists, the suffix is only rendered as . in html
     """
-    if node.list_data['type'] == u'bullet':
+    if node.list_data['type'] == 'bullet':
         o = nodes.bullet_list(bullet=node.list_data['bullet_char'])
     else:
         o = nodes.enumerated_list(
@@ -257,12 +257,12 @@ def listNode(node):
             enumtype='arabic',
             start=node.list_data['start'],
         )
-    for n in MarkDown(node):
+    for n in markdown(node):
         o += n
     return o
 
 
-def MarkDown(node):
+def markdown(node):
     """
     Returns a list of nodes, containing CommonMark nodes converted to docutils nodes
     """
@@ -301,13 +301,13 @@ def MarkDown(node):
         elif t == 'image':
             output.append(image(cur))
         elif t == 'list':
-            output.append(listNode(cur))
+            output.append(list_node(cur))
         elif t == 'item':
-            output.append(listItem(cur))
+            output.append(list_item(cur))
         elif t == 'MDsection':
             output.append(section(cur))
         else:
-            print('Received unhandled type: {}. Full print of node:'.format(t))
+            print(f'Received unhandled type: {t}. Full print of node:')
             cur.pretty()
 
         cur = cur.nxt
@@ -315,7 +315,7 @@ def MarkDown(node):
     return output
 
 
-def finalizeSection(section):
+def finalize_section(section):
     """
     Correct the nxt and parent for each child
     """
@@ -329,7 +329,7 @@ def finalizeSection(section):
         cur = cur.nxt
 
 
-def nestSections(block, level=1):
+def nest_sections(block, level=1):
     """
     Sections aren't handled by CommonMark at the moment.
     This function adds sections to a block of nodes.
@@ -356,7 +356,7 @@ def nestSections(block, level=1):
             if cur.t == 'heading' and cur.level == level:
                 # Found a split point, flush the last section if needed
                 if section.first_child is not None:
-                    finalizeSection(section)
+                    finalize_section(section)
                     children.append(section)
                     section = Node('MDsection', 0)
             nxt = cur.nxt
@@ -372,16 +372,16 @@ def nestSections(block, level=1):
 
         # If there's only 1 child then don't bother
         if section.first_child is not None:
-            finalizeSection(section)
+            finalize_section(section)
             children.append(section)
 
         block.first_child = None
         block.last_child = None
-        nextLevel = level + 1
+        next_level = level + 1
         for child in children:
             # Handle nesting
             if child.t == 'MDsection':
-                nestSections(child, level=nextLevel)
+                nest_sections(child, level=next_level)
 
             # Append
             if block.first_child is None:
@@ -394,15 +394,15 @@ def nestSections(block, level=1):
             block.last_child = child
 
 
-def parseMarkDownBlock(text):
+def parse_markdown_block(text):
     """
     Parses a block of text, returning a list of docutils nodes
 
-    >>> parseMarkdownBlock("Some\n====\n\nblock of text\n\nHeader\n======\n\nblah\n")
+    >>> parse_markdown_block("Some\n====\n\nblock of text\n\nHeader\n======\n\nblah\n")
     []
     """
     block = Parser().parse(text)
     # CommonMark can't nest sections, so do it manually
-    nestSections(block)
+    nest_sections(block)
 
-    return MarkDown(block)
+    return markdown(block)

@@ -2,6 +2,11 @@
 Change log
 **********
 
+Unreleased
+##########
+
+ * Minimum python version is now 3.6
+
 0.3.1
 #####
 

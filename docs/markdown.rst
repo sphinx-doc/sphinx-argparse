@@ -80,7 +80,7 @@ In addition to using MarkDown in nested content, one can also use MarkDown direc
     def blah():
         parser = argparse.ArgumentParser(description="""
     ### Example of MarkDown inside programs
-    
+
     [I'm a link](http://www.google.com)
     """)
         parser.add_argument('cmd', help='execute a `command`')
@@ -101,4 +101,3 @@ This will then be rendered as:
     :func: blah
     :prog: sample
     :markdownhelp:
-

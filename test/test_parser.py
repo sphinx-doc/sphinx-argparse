@@ -1,7 +1,5 @@
 import argparse
 
-import six
-
 from sphinxarg.parser import parse_parser, parser_navigate
 
 
@@ -24,9 +22,7 @@ def test_parse_default():
 
     data = parse_parser(parser)
 
-    assert data['action_groups'][0]['options'] == [
-        {'name': ['--foo'], 'default': '"123"', 'help': ''}
-    ]
+    assert data['action_groups'][0]['options'] == [{'name': ['--foo'], 'default': '"123"', 'help': ''}]
 
 
 def test_parse_arg_choices():
@@ -67,9 +63,7 @@ def test_parse_default_skip_default():
 
     data = parse_parser(parser, skip_default_values=True)
 
-    assert data['action_groups'][0]['options'] == [
-        {'name': ['--foo'], 'default': '==SUPPRESS==', 'help': ''}
-    ]
+    assert data['action_groups'][0]['options'] == [{'name': ['--foo'], 'default': '==SUPPRESS==', 'help': ''}]
 
 
 def test_parse_positional():
@@ -111,9 +105,7 @@ def test_parse_nested():
 
     subparser = subparsers.add_parser('install', help='install help')
     subparser.add_argument('ref', type=str, help='foo1 help')
-    subparser.add_argument(
-        '--upgrade', action='store_true', default=False, help='foo2 help'
-    )
+    subparser.add_argument('--upgrade', action='store_true', default=False, help='foo2 help')
 
     data = parse_parser(parser)
 
@@ -132,15 +124,58 @@ def test_parse_nested():
                 {
                     'title': 'Positional Arguments',
                     'description': None,
-                    'options': [
-                        {'name': ['ref'], 'help': 'foo1 help', 'default': None}
-                    ],
+                    'options': [{'name': ['ref'], 'help': 'foo1 help', 'default': None}],
+                },
+                {
+                    'description': None,
+                    'title': 'Named Arguments',
+                    'options': [{'name': ['--upgrade'], 'default': False, 'help': 'foo2 help'}],
+                },
+            ],
+        }
+    ]
+
+
+def test_parse_nested_with_alias():
+    parser = argparse.ArgumentParser(prog='under-test')
+    parser.add_argument('foo', default=False, help='foo help')
+    parser.add_argument('bar', default=False)
+
+    subparsers = parser.add_subparsers()
+
+    subparser = subparsers.add_parser('install', aliases=['i'], help='install help')
+    subparser.add_argument('ref', type=str, help='foo1 help')
+    subparser.add_argument('--upgrade', action='store_true', default=False, help='foo2 help')
+
+    data = parse_parser(parser)
+
+    assert data['action_groups'][0]['options'] == [
+        {'name': ['foo'], 'help': 'foo help', 'default': False},
+        {'name': ['bar'], 'help': '', 'default': False},
+    ]
+
+    assert data['children'] == [
+        {
+            'name': 'install (i)',
+            'identifier': 'install',
+            'help': 'install help',
+            'usage': 'usage: under-test install [-h] [--upgrade] ref',
+            'bare_usage': 'under-test install [-h] [--upgrade] ref',
+            'action_groups': [
+                {
+                    'title': 'Positional Arguments',
+                    'description': None,
+                    'options': [{'name': ['ref'], 'help': 'foo1 help', 'default': None}],
                 },
                 {
                     'description': None,
                     'title': 'Named Arguments',
                     'options': [
-                        {'name': ['--upgrade'], 'default': False, 'help': 'foo2 help'}
+                        {
+                            'name': ['--upgrade'],
+                            'default': False,
+                            'help': 'foo2 help',
+                        }
                     ],
                 },
             ],
@@ -148,75 +183,23 @@ def test_parse_nested():
     ]
 
 
-if six.PY3:
+def test_aliased_traversal():
+    parser = argparse.ArgumentParser(prog='under-test')
 
-    def test_parse_nested_with_alias():
-        parser = argparse.ArgumentParser(prog='under-test')
-        parser.add_argument('foo', default=False, help='foo help')
-        parser.add_argument('bar', default=False)
+    subparsers1 = parser.add_subparsers()
+    subparsers1.add_parser('level1', aliases=['l1'])
 
-        subparsers = parser.add_subparsers()
+    data = parse_parser(parser)
 
-        subparser = subparsers.add_parser('install', aliases=['i'], help='install help')
-        subparser.add_argument('ref', type=str, help='foo1 help')
-        subparser.add_argument(
-            '--upgrade', action='store_true', default=False, help='foo2 help'
-        )
+    data2 = parser_navigate(data, 'level1')
 
-        data = parse_parser(parser)
-
-        assert data['action_groups'][0]['options'] == [
-            {'name': ['foo'], 'help': 'foo help', 'default': False},
-            {'name': ['bar'], 'help': '', 'default': False},
-        ]
-
-        assert data['children'] == [
-            {
-                'name': 'install (i)',
-                'identifier': 'install',
-                'help': 'install help',
-                'usage': 'usage: under-test install [-h] [--upgrade] ref',
-                'bare_usage': 'under-test install [-h] [--upgrade] ref',
-                'action_groups': [
-                    {
-                        'title': 'Positional Arguments',
-                        'description': None,
-                        'options': [
-                            {'name': ['ref'], 'help': 'foo1 help', 'default': None}
-                        ],
-                    },
-                    {
-                        'description': None,
-                        'title': 'Named Arguments',
-                        'options': [
-                            {
-                                'name': ['--upgrade'],
-                                'default': False,
-                                'help': 'foo2 help',
-                            }
-                        ],
-                    },
-                ],
-            }
-        ]
-
-    def test_aliased_traversal():
-        parser = argparse.ArgumentParser(prog='under-test')
-
-        subparsers1 = parser.add_subparsers()
-        subparsers1.add_parser('level1', aliases=['l1'])
-
-        data = parse_parser(parser)
-
-        data2 = parser_navigate(data, 'level1')
-
-        assert data2 == {
-            'bare_usage': 'under-test level1 [-h]',
-            'help': '',
-            'usage': 'usage: under-test level1 [-h]',
-            'name': 'level1 (l1)',
-            'identifier': 'level1',
-        }
+    assert data2 == {
+        'bare_usage': 'under-test level1 [-h]',
+        'help': '',
+        'usage': 'usage: under-test level1 [-h]',
+        'name': 'level1 (l1)',
+        'identifier': 'level1',
+    }
 
 
 def test_parse_nested_traversal():
@@ -289,9 +272,7 @@ def test_string_quoting():
     This prevents things like '--optLSFConf=-q short' when '--optLSFConf="-q short"' is correct.
     """
     parser = argparse.ArgumentParser(prog='test_string_quoting_prog')
-    parser.add_argument(
-        '--bar', default='foo bar', help='%(prog)s (default: %(default)s)'
-    )
+    parser.add_argument('--bar', default='foo bar', help='%(prog)s (default: %(default)s)')
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
@@ -340,10 +321,10 @@ def test_action_groups_with_subcommands():
     """
     parser = argparse.ArgumentParser('foo')
     subparsers = parser.add_subparsers()
-    parserA = subparsers.add_parser('A', help='A subparser')
-    parserA.add_argument('baz', type=int, help='An integer')
-    parserB = subparsers.add_parser('B', help='B subparser')
-    parserB.add_argument('--barg', choices='XYZ', help='A list of choices')
+    parser_a = subparsers.add_parser('A', help='A subparser')
+    parser_a.add_argument('baz', type=int, help='An integer')
+    parser_b = subparsers.add_parser('B', help='B subparser')
+    parser_b.add_argument('--barg', choices='XYZ', help='A list of choices')
 
     parser.add_argument('--foo', help='foo help')
     parser.add_argument('foo2', metavar='foo2 metavar', help='foo2 help')
@@ -358,9 +339,7 @@ def test_action_groups_with_subcommands():
 
     assert data['action_groups'] == [
         {
-            'options': [
-                {'default': None, 'name': ['foo2 metavar'], 'help': 'foo2 help'}
-            ],
+            'options': [{'default': None, 'name': ['foo2 metavar'], 'help': 'foo2 help'}],
             'description': None,
             'title': 'Positional Arguments',
         },
@@ -392,9 +371,7 @@ def test_action_groups_with_subcommands():
             'usage': 'usage: foo A [-h] baz',
             'action_groups': [
                 {
-                    'options': [
-                        {'default': None, 'name': ['baz'], 'help': 'An integer'}
-                    ],
+                    'options': [{'default': None, 'name': ['baz'], 'help': 'An integer'}],
                     'description': None,
                     'title': 'Positional Arguments',
                 }

@@ -15,11 +15,10 @@ build:  ## Build the sdist/wheel packages
 	poetry build
 
 test:  ## Test the project
-	poetry run pytest --verbosity=2 --strict --log-level=DEBUG $(args)
+	poetry run pytest --verbosity=2 --log-level=DEBUG $(args)
 
 lint:  ## Check code for style
-	poetry run flake8 --statistics --show-source $(CODE) test/
-	poetry run black --diff --check $(CODE) test/
+	pre-commit run
 	poetry run pytest --dead-fixtures --dup-fixtures
 
 pretty: ## Prettify the code
@@ -27,8 +26,7 @@ pretty: ## Prettify the code
 	poetry run black $(CODE) test/
 
 precommit_install: ## Install simple pre-commit checks
-	echo -e '#!/bin/sh\nmake lint test\n' > .git/hooks/pre-commit
-	chmod +x .git/hooks/pre-commit
+	pre-commit install
 
 bump_major: ## Release a new major version
 	poetry version major
