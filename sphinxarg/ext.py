@@ -92,7 +92,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
     if 'action_groups' in data:
         for action_group in data['action_groups']:
             # Every action group is comprised of a section, holding a title, the description, and the option group (members)
-            section = nodes.section(ids=[action_group['title']])
+            section = nodes.section(ids=[action_group['title'].replace(' ', '-').lower()])
             section += nodes.title(action_group['title'], action_group['title'])
 
             desc = []
