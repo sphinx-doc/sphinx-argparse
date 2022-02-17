@@ -1,6 +1,6 @@
 import argparse
 
-from sphinxarg.parser import parse_parser, parser_navigate
+from sphinxarg4nni.parser import parse_parser, parser_navigate
 
 
 def test_parse_options():

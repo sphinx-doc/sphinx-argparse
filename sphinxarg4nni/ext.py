@@ -89,11 +89,12 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
     """
     definitions = map_nested_definitions(nested_content)
     nodes_list = []
+    tables = {}
+    descriptions = {}
+
     if 'action_groups' in data:
         for action_group in data['action_groups']:
-            # Every action group is comprised of a section, holding a title, the description, and the option group (members)
-            section = nodes.section(ids=[action_group['title']])
-            section += nodes.title(action_group['title'], action_group['title'])
+            table_group_name = 'default' if action_group['title'] in ('Positional Arguments', 'Named Arguments') else action_group['title']
 
             desc = []
             if action_group['description']:
@@ -114,8 +115,20 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                     for k, v in map_nested_definitions(subcontent).items():
                         definitions[k] = v
             # Render appropriately
-            for element in render_list(desc, markdown_help):
-                section += element
+            descriptions[table_group_name] = render_list(desc, markdown_help)
+
+            if table_group_name not in tables:
+                table = nodes.table()
+                tgroup = nodes.tgroup(cols=2)
+                table += tgroup
+                for _ in range(2):
+                    colspec = nodes.colspec(colwidth=1)
+                    tgroup += colspec
+                tbody = nodes.tbody()
+                tgroup += tbody
+                tables[table_group_name] = (table, tbody)
+
+            _, tbody = tables[table_group_name]
 
             local_definitions = definitions
             if len(subcontent) > 0:
@@ -159,15 +172,25 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                         desc.insert(0, s)
                 term = ', '.join(entry['name'])
 
-                n = nodes.option_list_item(
-                    '',
-                    nodes.option_group('', nodes.option_string(text=term)),
-                    nodes.description('', *render_list(desc, markdown_help, settings)),
-                )
-                items.append(n)
+                row = nodes.row()
+                entry_first = nodes.entry()
+                entry_first += nodes.literal(term, term)
+                row += entry_first
+                entry_second = nodes.entry()
+                for element in render_list(desc, markdown_help, settings):
+                    entry_second += element
+                row += entry_second
+                tbody += row
 
-            section += nodes.option_list('', *items)
-            nodes_list.append(section)
+        for key, (table, _) in tables.items():
+            if key != 'default':
+                section = nodes.section(ids=[action_group['title']])
+                section += nodes.title(action_group['title'], action_group['title'])
+                for element in render_list(desc, markdown_help):
+                    section += element
+                section += table
+            else:
+                nodes_list.append(table)
 
     return nodes_list
 
@@ -185,9 +208,6 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
     definitions = map_nested_definitions(nested_content)
     items = []
     if 'children' in data:
-        subcommands = nodes.section(ids=["Sub-commands:"])
-        subcommands += nodes.title('Sub-commands:', 'Sub-commands:')
-
         for child in data['children']:
             sec = nodes.section(ids=[child['name']])
             sec += nodes.title(child['name'], child['name'])
@@ -223,8 +243,7 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
                 for element in render_list([child['epilog']], markdown_help):
                     sec += element
 
-            subcommands += sec
-        items.append(subcommands)
+            items.append(sec)
 
     return items
 
