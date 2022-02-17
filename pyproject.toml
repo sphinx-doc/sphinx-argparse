@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "sphinx-argparse"
-version = "0.3.1"
-description = "A sphinx extension that automatically documents argparse commands and options"
+name = "sphinx-argparse-nni"
+version = "0.4.0"
+description = "A sphinx extension that automatically documents argparse commands and options, tailored for NNI"
 readme = "README.md"
-repository = "https://github.com/ashb/sphinx-argparse"
-authors = ["Ash Berlin-Taylor <ash_github@firemirror.com>"]
+repository = "https://github.com/ultmaster/sphinx-argparse"
+authors = ["Ash Berlin-Taylor <ash_github@firemirror.com>", "Yuge Zhang <scottyugochang@gmail.com>"]
 license = "MIT"
 classifiers = [
   "Framework :: Sphinx :: Extension",

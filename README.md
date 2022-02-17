@@ -3,8 +3,12 @@
 [![Install with conda](https://anaconda.org/conda-forge/sphinx-argparse/badges/installer/conda.svg)](https://github.com/conda-forge/sphinx-argparse-feedstock)
 ![Conda downloads](https://anaconda.org/conda-forge/sphinx-argparse/badges/downloads.svg)
 
-sphinx-argparse
-===============
+sphinx-argparse-nni
+===================
+
+Modified to suit for the specific needs from NNI.
+
+---------------------
 
 A sphinx extension that automatically documents argparse commands and options.
 
