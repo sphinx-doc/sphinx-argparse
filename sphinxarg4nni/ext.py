@@ -82,6 +82,20 @@ def render_list(l, markdown_help, settings=None):
         return all_children
 
 
+def create_table_row(*contents):
+    row = nodes.row()
+    for content in contents:
+        entry = nodes.entry()
+        if isinstance(content, str):
+            entry += nodes.paragraph(text=content)
+        elif isinstance(content, list):
+            entry.extend(content)
+        else:
+            entry += content
+        row += entry
+    return row
+
+
 def print_action_groups(data, nested_content, markdown_help=False, settings=None):
     """
     Process all 'action groups', which are also include 'Options' and 'Required
@@ -119,11 +133,19 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
 
             if table_group_name not in tables:
                 table = nodes.table()
-                tgroup = nodes.tgroup(cols=2)
+                tgroup = nodes.tgroup(cols=4)
                 table += tgroup
-                for _ in range(2):
-                    colspec = nodes.colspec(colwidth=1)
+
+                col_widths = [20, 15, 15, 50]
+
+                for width in col_widths:
+                    colspec = nodes.colspec(colwidth=width)
                     tgroup += colspec
+
+                thead = nodes.thead()
+                thead += create_table_row('Name', 'Required', 'Default', 'Description')
+                tgroup += thead
+
                 tbody = nodes.tbody()
                 tgroup += tbody
                 tables[table_group_name] = (table, tbody)
@@ -136,7 +158,6 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                 for k, v in map_nested_definitions(subcontent).items():
                     local_definitions[k] = v
 
-            items = []
             # Iterate over action group members
             for entry in action_group['options']:
                 # Members will include:
@@ -154,10 +175,11 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                     '"==SUPPRESS=="',
                     '==SUPPRESS==',
                 ]:
-                    if entry['default'] == '':
-                        arg.append('Default: ""')
-                    else:
-                        arg.append(f"Default: {entry['default']}")
+                    default = str(entry['default'])
+                    if not default:
+                        default = '""'
+                else:
+                    default = ''
 
                 # Handle nested content, the term used in the dict has the comma removed for simplicity
                 desc = arg
@@ -172,21 +194,19 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                         desc.insert(0, s)
                 term = ', '.join(entry['name'])
 
-                row = nodes.row()
-                entry_first = nodes.entry()
-                entry_first += nodes.literal(term, term)
-                row += entry_first
-                entry_second = nodes.entry()
-                for element in render_list(desc, markdown_help, settings):
-                    entry_second += element
-                row += entry_second
+                row = create_table_row(
+                    nodes.literal(term, term),
+                    entry['required'],
+                    default,
+                    render_list(desc, markdown_help, settings)
+                )
                 tbody += row
 
         for key, (table, _) in tables.items():
             if key != 'default':
                 section = nodes.section(ids=[action_group['title']])
                 section += nodes.title(action_group['title'], action_group['title'])
-                for element in render_list(desc, markdown_help):
+                for element in descriptions[key]:
                     section += element
                 section += table
             else:
