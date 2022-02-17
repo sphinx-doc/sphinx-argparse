@@ -10,7 +10,7 @@ from docutils.statemachine import StringList
 from docutils.utils import new_document
 from sphinx.util.nodes import nested_parse_with_titles
 
-from sphinxarg.parser import parse_parser, parser_navigate
+from sphinxarg4nni.parser import parse_parser, parser_navigate
 
 from . import __version__
 
@@ -64,7 +64,7 @@ def render_list(l, markdown_help, settings=None):
     if len(l) == 0:
         return []
     if markdown_help:
-        from sphinxarg.markdown import parse_markdown_block
+        from sphinxarg4nni.markdown import parse_markdown_block
 
         return parse_markdown_block('\n\n'.join(l) + '\n')
     else:
@@ -489,7 +489,7 @@ class ArgParseDirective(Directive):
         items = []
         nested_content = nodes.paragraph()
         if 'markdown' in self.options:
-            from sphinxarg.markdown import parse_markdown_block
+            from sphinxarg4nni.markdown import parse_markdown_block
 
             items.extend(parse_markdown_block('\n'.join(self.content) + '\n'))
         else:
