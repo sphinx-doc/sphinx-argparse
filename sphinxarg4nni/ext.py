@@ -136,7 +136,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                 tgroup = nodes.tgroup(cols=4)
                 table += tgroup
 
-                col_widths = [20, 15, 15, 50]
+                col_widths = [25, 10, 20, 45]
 
                 for width in col_widths:
                     colspec = nodes.colspec(colwidth=width)
@@ -197,7 +197,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                 row = create_table_row(
                     nodes.literal(term, term),
                     entry['required'],
-                    default,
+                    nodes.literal(default, default),
                     render_list(desc, markdown_help, settings)
                 )
                 tbody += row
@@ -215,7 +215,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
     return nodes_list
 
 
-def print_subcommands(data, nested_content, markdown_help=False, settings=None):  # noqa: N803
+def print_subcommands(data, nested_content, markdown_help=False, settings=None, prefix=None):  # noqa: N803
     """
     Each subcommand is a dictionary with the following keys:
 
@@ -229,8 +229,12 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
     items = []
     if 'children' in data:
         for child in data['children']:
-            sec = nodes.section(ids=[child['name']])
-            sec += nodes.title(child['name'], child['name'])
+            full_name = prefix[:] or []
+            full_name.append(child['name'])
+            sec = nodes.section(ids=['-'.join(full_name)])
+
+            name = ' '.join(full_name[-2:])
+            sec += nodes.title(name, name)
 
             if 'description' in child and child['description']:
                 desc = [child['description']]
@@ -256,7 +260,8 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
             for x in print_action_groups(child, nested_content + subcontent, markdown_help, settings=settings):
                 sec += x
 
-            for x in print_subcommands(child, nested_content + subcontent, markdown_help, settings=settings):
+            for x in print_subcommands(child, nested_content + subcontent, markdown_help,
+                                       settings=settings, prefix=full_name):
                 sec += x
 
             if 'epilog' in child and child['epilog']:
@@ -563,6 +568,7 @@ class ArgParseDirective(Directive):
                     nested_content,
                     markdown_help,
                     settings=self.state.document.settings,
+                    prefix=[parser.prog],
                 )
             )
         if 'epilog' in result and 'noepilog' not in self.options:
