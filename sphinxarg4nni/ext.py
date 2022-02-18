@@ -238,10 +238,13 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None, 
 
             if 'description' in child and child['description']:
                 desc = [child['description']]
-            elif child['help']:
-                desc = [child['help']]
             else:
-                desc = ['Undocumented']
+                desc = []
+            
+            if child['help']:
+                help = [child['help']]
+            else:
+                help = []
 
             # Handle nested content
             subcontent = []
@@ -259,6 +262,8 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None, 
             sec += nodes.literal_block(text=child['bare_usage'])
             for x in print_action_groups(child, nested_content + subcontent, markdown_help, settings=settings):
                 sec += x
+            for element in render_list(help, markdown_help):
+                sec += element
 
             for x in print_subcommands(child, nested_content + subcontent, markdown_help,
                                        settings=settings, prefix=full_name):
