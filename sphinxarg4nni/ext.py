@@ -143,7 +143,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                     tgroup += colspec
 
                 thead = nodes.thead()
-                thead += create_table_row('Name', 'Required', 'Default', 'Description')
+                thead += create_table_row('Name / Shorthand', 'Required', 'Default', 'Description')
                 tgroup += thead
 
                 tbody = nodes.tbody()
@@ -259,7 +259,9 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None, 
 
             for element in render_list(desc, markdown_help):
                 sec += element
-            sec += nodes.literal_block(text=child['bare_usage'])
+            usage = nodes.literal_block(text=child['bare_usage'], classes=['highlight-bash'])
+            usage['language'] = 'bash'
+            sec += usage
             for x in print_action_groups(child, nested_content + subcontent, markdown_help, settings=settings):
                 sec += x
             for element in render_list(help, markdown_help):
