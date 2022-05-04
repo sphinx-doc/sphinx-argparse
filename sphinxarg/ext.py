@@ -1,6 +1,7 @@
 import os
 import sys
 from argparse import ArgumentParser
+from distutils.spawn import find_executable
 
 from docutils import nodes
 from docutils.frontend import OptionParser
@@ -431,6 +432,31 @@ class ArgParseDirective(Directive):
         self.state.nested_parse(StringList(text.split("\n")), 0, content)
         return content
 
+    def _open_filename(self):
+        # try open with given path
+        try:
+            f = open(self.options['filename'])
+        except (OSError, FileNotFoundError):
+            pass
+        else:
+            return f
+        # try open with abspath
+        try:
+            f = open(os.path.abspath(self.options['filename']))
+        except (OSError, FileNotFoundError):
+            pass
+        else:
+            return f
+        # try open with find_executable
+        try:
+            f = open(find_executable(self.options['filename']))
+        except (OSError, FileNotFoundError):
+            pass
+        else:
+            return f
+        # raise exception
+        raise FileNotFoundError(self.options['filename'])
+
     def run(self):
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
@@ -441,11 +467,7 @@ class ArgParseDirective(Directive):
             attr_name = _parts[-1]
         elif 'filename' in self.options and 'func' in self.options:
             mod = {}
-            try:
-                f = open(self.options['filename'])
-            except OSError:
-                # try open with abspath
-                f = open(os.path.abspath(self.options['filename']))
+            f = self._open_filename()
             code = compile(f.read(), self.options['filename'], 'exec')
             exec(code, mod)
             attr_name = self.options['func']
