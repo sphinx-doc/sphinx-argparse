@@ -435,6 +435,10 @@ class ArgParseDirective(Directive):
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
             attr_name = self.options['func']
+            attr_list = attr_name.split('.')
+            if len(attr_list) > 1:
+                attr_name = '.'.join(attr_list[:-1])
+                attr_func = attr_list[-1]
         elif 'ref' in self.options:
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
@@ -464,7 +468,12 @@ class ArgParseDirective(Directive):
                 raise self.error(('Module "%s" has no attribute "%s"\n' 'Incorrect argparse :module: or :func: values?') % (module_name, attr_name))
             func = getattr(mod, attr_name)
 
-        if isinstance(func, ArgumentParser):
+        if isinstance(func, type):
+            x = func()
+            if attr_func != '__call__':
+                x = getattr(x, attr_func)
+            parser = x()
+        elif isinstance(func, ArgumentParser):
             parser = func
         elif 'passparser' in self.options:
             parser = ArgumentParser()
