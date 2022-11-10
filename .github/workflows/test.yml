@@ -11,6 +11,46 @@ env:
   PRE_COMMIT_COLOR: always
 
 jobs:
+  # We only need to lint once, not for _each_ python version
+  lint:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11']
+        os: [ubuntu-latest]
+    env:
+      PYTHON: ${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache python deps
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip/
+          ~/.cache/pypoetry/
+        key: python${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+        restore-keys: python${{ matrix.python-version }}-
+    - name: Cache pre-commitdeps
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pre-commit/
+        key: precommit-py${{ matrix.python-version }}-precommit-${{ hashFiles('poetry.lock', '.pre-commit-config.yaml') }}
+        restore-keys: precommit-py${{ matrix.python-version }}-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade pre-commit poetry
+        poetry install --no-root
+    - name: Lint
+      run: |
+        pre-commit run --all-files -v --show-diff-on-failure
+        pre-commit gc
   build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,37 +63,26 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Cache deps
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/.cache/pypoetry/
           ~/.cache/pip/
         key: python${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
         restore-keys: python${{ matrix.python-version }}-
-    - name: Cache pre-commit deps
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.cache/pre-commit/
-        key: precommit-${{ hashFiles('.pre-commit-config.yaml') }}
-        restore-keys: precommit-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install --upgrade poetry pre-commit
+        python -m pip install --upgrade poetry
         poetry install
-    - name: Lint
-      run: |
-        pre-commit run --all-files -v --show-diff-on-failure
-        poetry run pytest --dead-fixtures --dup-fixtures --color=yes
-        pre-commit gc
     - name: Test with pytest
       run: |
         make test args="--color=yes"
+        poetry run pytest --dead-fixtures --dup-fixtures --color=yes
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1.5.0
       with:
