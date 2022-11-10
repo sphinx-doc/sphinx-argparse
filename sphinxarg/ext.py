@@ -1,7 +1,7 @@
 import os
 import sys
 from argparse import ArgumentParser
-from distutils.spawn import find_executable
+import shutil
 
 from docutils import nodes
 from docutils.frontend import OptionParser
@@ -435,25 +435,20 @@ class ArgParseDirective(Directive):
     def _open_filename(self):
         # try open with given path
         try:
-            f = open(self.options['filename'])
+            return open(self.options['filename'])
         except (OSError, FileNotFoundError):
             pass
-        else:
-            return f
+
         # try open with abspath
         try:
-            f = open(os.path.abspath(self.options['filename']))
+            return open(os.path.abspath(self.options['filename']))
         except (OSError, FileNotFoundError):
             pass
-        else:
-            return f
-        # try open with find_executable
+        # try open with shutil which
         try:
-            f = open(find_executable(self.options['filename']))
+            return open(shutil.which(self.options['filename']))
         except (OSError, FileNotFoundError):
             pass
-        else:
-            return f
         # raise exception
         raise FileNotFoundError(self.options['filename'])
 
