@@ -436,17 +436,17 @@ class ArgParseDirective(Directive):
         # try open with given path
         try:
             return open(self.options['filename'])
-        except (OSError, FileNotFoundError):
+        except OSError:
             pass
         # try open with abspath
         try:
             return open(os.path.abspath(self.options['filename']))
-        except (OSError, FileNotFoundError):
+        except OSError:
             pass
         # try open with shutil which
         try:
             return open(shutil.which(self.options['filename']))
-        except (OSError, FileNotFoundError):
+        except OSError:
             pass
         # raise exception
         raise FileNotFoundError(self.options['filename'])
