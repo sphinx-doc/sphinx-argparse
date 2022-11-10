@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx-argparse"
-version = "0.3.2"
+version = "0.4.0"
 description = "A sphinx extension that automatically documents argparse commands and options"
 readme = "README.md"
 repository = "https://github.com/ashb/sphinx-argparse"
@@ -15,7 +15,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = ">=3.7"
 sphinx = ">=1.2.0"
 CommonMark = { version = ">=0.5.6", optional = true }
 
@@ -29,8 +29,8 @@ pytest-cov = "^2.7"
 pytest-deadfixtures = "^2.2.1"
 flake8-colors = "^0.1.9"
 flake8-bugbear = "^19.8"
-black = {version = "^21.8b0", allow-prereleases = true, python = ">=3.6.2"}
-isort = {version = "^5.8.0", python = "^3.6"}
+black = {version = "^21.8b0", allow-prereleases = true }
+isort = {version = "^5.8.0" }
 mypy = "^0.910"
 types-docutils = "^0.17.0"
 pep8-naming = "^0.8.2"
