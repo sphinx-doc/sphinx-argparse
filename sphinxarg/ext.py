@@ -1,7 +1,7 @@
 import os
+import shutil
 import sys
 from argparse import ArgumentParser
-import shutil
 
 from docutils import nodes
 from docutils.frontend import OptionParser
