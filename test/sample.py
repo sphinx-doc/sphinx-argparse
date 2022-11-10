@@ -8,7 +8,7 @@ my_command1 = subparsers.add_parser('apply', help='Execute provision script, col
 
 my_command1.add_argument(
     'path',
-    help='Specify path to provision script. provision.py in current' 'directory by default. Also may include url.',
+    help='Specify path to provision script. provision.py in current directory by default. Also may include url.',
     default='provision.py',
 )
 my_command1.add_argument(
@@ -16,7 +16,7 @@ my_command1.add_argument(
     '--rollback',
     action='store_true',
     default=False,
-    help='If specified will rollback all' 'resources applied.',
+    help='If specified will rollback all resources applied.',
 )
 my_command1.add_argument('--tree', action='store_true', default=False, help='Print resource tree')
 my_command1.add_argument('--dry', action='store_true', default=False, help='Just print changes list')

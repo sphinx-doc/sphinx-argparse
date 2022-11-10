@@ -22,18 +22,20 @@ CommonMark = { version = ">=0.5.6", optional = true }
 [tool.poetry.extras]
 markdown = ["CommonMark"]
 
-[tool.poetry.dev-dependencies]
-flake8 = "*"
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5"
 pytest = "*"
 pytest-cov = "^2.7"
 pytest-deadfixtures = "^2.2.1"
-flake8-colors = "^0.1.9"
-flake8-bugbear = "^19.8"
-black = {version = "^21.8b0", allow-prereleases = true }
-isort = {version = "^5.8.0" }
+flake8-bugbear = "^22"
+black = {version = "^22", python = ">=3.6.2"}
 mypy = "^0.910"
 types-docutils = "^0.17.0"
 pep8-naming = "^0.8.2"
+
+[tool.poetry.group.dev.dependencies.isort]
+version = "^5.10"
+markers = "python_version < '4.0'"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -60,7 +62,7 @@ module = [
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-addopts = "--strict-markers"
+addopts = "--strict-markers --tb=short"
 
 [tool.coverage.run]
 omit = ["tests/*","**/__main__.py"]
