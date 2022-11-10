@@ -461,7 +461,7 @@ class ArgParseDirective(Directive):
                 raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}')
 
             if not hasattr(mod, attr_name):
-                raise self.error(('Module "%s" has no attribute "%s"\n' 'Incorrect argparse :module: or :func: values?') % (module_name, attr_name))
+                raise self.error(('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?') % (module_name, attr_name))
             func = getattr(mod, attr_name)
 
         if isinstance(func, ArgumentParser):
