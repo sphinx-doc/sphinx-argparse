@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 from argparse import ArgumentParser
 
@@ -431,6 +432,25 @@ class ArgParseDirective(Directive):
         self.state.nested_parse(StringList(text.split("\n")), 0, content)
         return content
 
+    def _open_filename(self):
+        # try open with given path
+        try:
+            return open(self.options['filename'])
+        except OSError:
+            pass
+        # try open with abspath
+        try:
+            return open(os.path.abspath(self.options['filename']))
+        except OSError:
+            pass
+        # try open with shutil which
+        try:
+            return open(shutil.which(self.options['filename']))
+        except OSError:
+            pass
+        # raise exception
+        raise FileNotFoundError(self.options['filename'])
+
     def run(self):
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
@@ -441,11 +461,7 @@ class ArgParseDirective(Directive):
             attr_name = _parts[-1]
         elif 'filename' in self.options and 'func' in self.options:
             mod = {}
-            try:
-                f = open(self.options['filename'])
-            except OSError:
-                # try open with abspath
-                f = open(os.path.abspath(self.options['filename']))
+            f = self._open_filename()
             code = compile(f.read(), self.options['filename'], 'exec')
             exec(code, mod)
             attr_name = self.options['func']
