@@ -23,13 +23,13 @@ jobs:
       PYTHON: ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         cache: poetry
-    - name: Install poetry
-      run: pipx install poetry
     - name: Install pre-commit
       run: pipx install pre-commit
     - name: Cache pre-commitdeps
@@ -56,13 +56,13 @@ jobs:
       PYTHON: ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v3
+    - name: Install poetry
+      run: pipx install poetry
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         cache: poetry
-    - name: Install poetry
-      run: pipx install poetry
     - name: Install dependencies
       run: poetry install
     - name: Test with pytest
@@ -98,14 +98,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install poetry
+      run: pipx install poetry
     - name: set up python
       uses: actions/setup-python@v4
       with:
-        # 3.11 isn't in the hosted tool cache, but all the others are, so we only need to add that one
         python-version: ${{ matrix.python-version }}
+        cache: 'poetry'
 
-    - name: Install poetry
-      run: pipx install poetry
     - run: poetry build
 
     - run: ls -altrh dist/
@@ -151,10 +151,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Install poetry
+      run: pipx install poetry
     - name: set up python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
+        cache: 'poetry'
 
     - name: check package version
       run: |
@@ -173,8 +176,6 @@ jobs:
         name: pypi_files
         path: dist
 
-    - name: Install poetry
-      run: pipx install poetry
 
     - name: upload to pypi
       run: poetry publish --dry-run
