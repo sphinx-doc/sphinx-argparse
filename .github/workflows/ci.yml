@@ -122,6 +122,13 @@ jobs:
           key: python3.11-${{ hashFiles('poetry.lock') }}
           restore-keys: python3.11-
 
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade poetry
+        python -m pip show poetry
+        which poetry
+
       - run: poetry build
 
       - run: ls -altrh dist/
