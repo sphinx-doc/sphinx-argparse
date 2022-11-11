@@ -3,9 +3,10 @@ name: Test
 on:
   push:
     branches: [ main ]
+    tags:
+      - '**'
   pull_request:
     branches: [ main ]
-
 
 env:
   PRE_COMMIT_COLOR: always
@@ -160,15 +161,7 @@ jobs:
         cache: 'poetry'
 
     - name: check package version
-      run: |
-        set -euo pipefail
-        package_ver="$(poetry version --short)"
-        if [[ "refs/tags/v${package_ver}" == "$GITHUB_REF" ]]
-          echo "✓ GITHUB_REF version matches ${package_ver}"
-        else
-          echo >&2 "✖ GITHUB_REF '${GITHUB_REF}' does not match package version '${package_ver}'
-          exit 1
-        fi
+      run: .github/check-version.py
 
     - name: get dist artifacts
       uses: actions/download-artifact@v3
