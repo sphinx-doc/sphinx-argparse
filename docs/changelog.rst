@@ -2,11 +2,13 @@
 Change log
 **********
 
-0.4.0 (unreleased)
+0.4.0
 #####
 
- * Minimum python version is now 3.7
- * Remove colon from "Sub-commands" title
+* Minimum python version is now 3.7 by @ashb in https://github.com/ashb/sphinx-argparse/pull/25
+* Fix anchor for toc by @Blaok in https://github.com/ashb/sphinx-argparse/pull/2
+* feat: find executable filename to address #16 by @tsutterley in https://github.com/ashb/sphinx-argparse/pull/17
+* Test against python 3.11 too by @ashb in https://github.com/ashb/sphinx-argparse/pull/22
 
 0.3.1
 #####

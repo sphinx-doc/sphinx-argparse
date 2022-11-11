@@ -171,7 +171,7 @@ jobs:
 
 
     - name: upload to pypi
-      run: poetry publish --dry-run
+      run: poetry publish
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ secrets.pypi_token }}
 
@@ -181,4 +181,4 @@ jobs:
         files: |
           dist/*
         generate_release_notes: true
-        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
+        prerelease: ${{ contains(github.ref, 'a') || contains(github.ref, 'b') || contains(github.ref, 'rc') }}
