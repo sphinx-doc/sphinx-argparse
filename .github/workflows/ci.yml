@@ -1,0 +1,203 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+env:
+  PRE_COMMIT_COLOR: always
+
+jobs:
+  # We only need to lint once, not for _each_ python version
+  lint:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11']
+        os: [ubuntu-latest]
+    env:
+      PYTHON: ${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache python deps
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip/
+          ~/.cache/pypoetry/
+        key: python${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+        restore-keys: python${{ matrix.python-version }}-
+    - name: Cache pre-commitdeps
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pre-commit/
+        key: precommit-py${{ matrix.python-version }}-precommit-${{ hashFiles('poetry.lock', '.pre-commit-config.yaml') }}
+        restore-keys: precommit-py${{ matrix.python-version }}-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade pre-commit poetry
+        poetry install --no-root
+    - name: Lint
+      run: |
+        pre-commit run --all-files -v --show-diff-on-failure
+        pre-commit gc
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        os: [ubuntu-latest]
+    env:
+      PYTHON: ${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache deps
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pypoetry/
+          ~/.cache/pip/
+        key: python${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+        restore-keys: python${{ matrix.python-version }}-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade poetry
+        poetry install
+    - name: Test with pytest
+      run: |
+        make test args="--color=yes"
+        poetry run pytest --dead-fixtures --dup-fixtures --color=yes
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.5.0
+      with:
+        flags: unittests
+        env_vars: PYTHON
+
+  check:
+    if: always()
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+  build:
+    name: build
+    # only run on push to main and on release, or with tag
+    if: "success() && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'Full Build'))"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up python
+        uses: actions/setup-python@v4
+        with:
+          # 3.11 isn't in the hosted tool cache, but all the others are, so we only need to add that one
+          python-version: 3.11
+
+      - name: Cache deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pypoetry/
+            ~/.cache/pip/
+          key: python3.11-${{ hashFiles('poetry.lock') }}
+          restore-keys: python3.11-
+
+      - run: poetry build
+
+      - run: ls -altrh dist/
+        shell: bash
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: pypi_files
+          path: dist
+
+  inspect-pypi-assets:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: get dist artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: pypi_files
+          path: dist
+
+      - name: list dist files
+        run: |
+         ls -lh dist/
+         echo "`ls dist | wc -l` files"
+      - name: extract and list sdist file
+        run: |
+         mkdir sdist-files
+         tar -xvf dist/*.tar.gz -C sdist-files
+         tree -a sdist-files
+      - name: extract and list wheel file
+        run: |
+         ls dist/*.whl | head -n 1
+         python -m zipfile --list `ls dist/*.whl | head -n 1`
+
+  release:
+    needs: [build, check]
+    if: "success() && startsWith(github.ref, 'refs/tags/')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: check package version
+        run: |
+          set -euo pipefail
+          package_ver="$(poetry version --short)"
+          if [[ "refs/tags/v${package_ver}" == "$GITHUB_REF" ]]
+            echo "✓ GITHUB_REF version matches ${package_ver}"
+          else
+            echo >&2 "✖ GITHUB_REF '${GITHUB_REF}' does not match package version '${package_ver}'
+            exit 1
+          fi
+
+      - name: get dist artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: pypi_files
+          path: dist
+
+      - name: upload to pypi
+        run: poetry publish --dry-run
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.pypi_token }}
+
+      - name: upload to github release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
