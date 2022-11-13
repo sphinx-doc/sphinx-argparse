@@ -37,9 +37,9 @@ classifiers = [
 ]
 dependencies = [
     "sphinx>=4.0.0",
+        "CommonMark>=0.9.1",
 ]
 dynamic = ["version"]
-
 
 [project.optional-dependencies]
 markdown = [
@@ -98,6 +98,7 @@ multi_line_output = 3
 [tool.mypy]
 files = ["sphinxarg", "test"]
 python_version = "3.10"
+exclude = '''(?x)( ^test/roots | ^docs )'''
 
 [[tool.mypy.overrides]]
 module = [
