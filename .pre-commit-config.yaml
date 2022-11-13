@@ -39,7 +39,7 @@ repos:
         language: system
         entry: poetry run mypy
         types: [python]
-        exclude: ^docs/
+        exclude: ^(docs/|test/roots)
       - id: black
         name: black
         language: system
