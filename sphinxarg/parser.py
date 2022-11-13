@@ -92,7 +92,13 @@ def parse_parser(parser, data=None, **kwargs):
                 'help': helps.get(name, ''),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
+                'parent': {
+                    'name': '' if 'name' not in data else data['name'],
+                    'prog': '' if 'prog' not in data else data['prog'],
+                },
             }
+            if 'parent' in data:
+                subdata['parent'].update({'parent': data['parent']})
             if subalias:
                 subdata['identifier'] = name
             parse_parser(subaction, subdata, **kwargs)

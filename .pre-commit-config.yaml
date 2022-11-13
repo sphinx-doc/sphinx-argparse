@@ -33,4 +33,4 @@ repos:
         language: system
         entry: mypy
         types: [python]
-        exclude: ^docs/
+        exclude: ^(docs|test/roots)/
