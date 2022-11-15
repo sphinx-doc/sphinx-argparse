@@ -5,6 +5,13 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3"
+  jobs:
+    post_create_environment:
+      # Install poetry
+      # https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions
+      - curl -sSL https://install.python-poetry.org | python -
+    pre_install:
+      - $HOME/.local/bin/poetry export --without-hashes --only docs > doc-requirements-from-poetry.txt
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
@@ -14,3 +21,4 @@ python:
   install:
     - method: pip
       path: .
+    - requirements: doc-requirements-from-poetry.txt
