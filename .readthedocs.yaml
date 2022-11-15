@@ -14,7 +14,7 @@ build:
       - $HOME/.local/bin/poetry config virtualenvs.create false
     pre_install:
       # Install project's dependencies
-      - $HOME/.local/bin/poetry install --with-docs
+      - $HOME/.local/bin/poetry install --with docs
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
