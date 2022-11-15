@@ -12,14 +12,15 @@ build:
       - curl -sSL https://install.python-poetry.org | python -
       # Tell poetry to not use a virtual environment
       - $HOME/.local/bin/poetry config virtualenvs.create false
-    pre_build:
-      # Install project's dependencies
-      - env | sort
-      - which python
-      - $HOME/.local/bin/poetry install --with docs -vv
-      - pip freeze
-      - pip show furo
+    pre_install:
+       - poetry export --without-hashes --only docs > doc-requirements-from-poetry.txt
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
    configuration: docs/conf.py
+
+python:
+  install:
+    - method: pip
+      path: .
+    - requirements: doc-requirements-from-poetry.txt
