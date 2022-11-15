@@ -2,7 +2,7 @@ import re
 from argparse import _HelpAction, _StoreConstAction, _SubParsersAction
 
 
-class NavigationException(Exception):
+class NavigationException(Exception):  # noqa: N818
     pass
 
 

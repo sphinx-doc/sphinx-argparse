@@ -69,7 +69,7 @@ jobs:
     - name: Test with pytest
       run: |
         make test args="--color=yes"
-        poetry run pytest --dead-fixtures --dup-fixtures --color=yes
+        poetry run coverage run -m pytest --dead-fixtures --dup-fixtures --color=yes
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1.5.0
       with:

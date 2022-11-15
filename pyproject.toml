@@ -15,23 +15,23 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7"
-sphinx = ">=1.2.0"
+python = ">=3.7,<4"
+sphinx = ">=4.0.0"
 CommonMark = { version = ">=0.5.6", optional = true }
 
 [tool.poetry.extras]
 markdown = ["CommonMark"]
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "^5"
-pytest = "*"
-pytest-cov = "^2.7"
-pytest-deadfixtures = "^2.2.1"
-flake8-bugbear = "^22"
+flake8 = "^5.0"
+pytest = "^7.2"
+pytest-deadfixtures = "^2.2"
+flake8-bugbear = "^22.10.27"
 black = {version = "^22", python = ">=3.6.2"}
 mypy = "^0.910"
 types-docutils = "^0.17.0"
-pep8-naming = "^0.8.2"
+pep8-naming = "^0.13"
+coverage = "^6.5"
 
 [tool.poetry.group.dev.dependencies.isort]
 version = "^5.10"
