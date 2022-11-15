@@ -16,7 +16,9 @@ build:
       # Install project's dependencies
       - env | sort
       - which python
-      - $HOME/.local/bin/poetry install --with docs
+      - $HOME/.local/bin/poetry install --with docs -vv
+      - pip freeze
+      - pip show furo
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
