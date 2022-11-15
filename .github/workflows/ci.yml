@@ -160,7 +160,8 @@ jobs:
         python-version: '3.11'
         cache: 'poetry'
 
-    - name: check package version
+    - id: check-version
+      name: check package version
       run: .github/check-version.py
 
     - name: get dist artifacts
@@ -168,7 +169,6 @@ jobs:
       with:
         name: pypi_files
         path: dist
-
 
     - name: upload to pypi
       run: poetry publish
@@ -181,4 +181,4 @@ jobs:
         files: |
           dist/*
         generate_release_notes: true
-        prerelease: ${{ contains(github.ref, 'a') || contains(github.ref, 'b') || contains(github.ref, 'rc') }}
+        prerelease: ${{ steps.check-version.output.is_prerelease }}

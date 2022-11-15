@@ -7,6 +7,8 @@ import re
 import subprocess
 import sys
 
+from packaging.version import Version
+
 
 def main() -> int:
     version_ref = os.getenv('GITHUB_REF')
@@ -19,10 +21,15 @@ def main() -> int:
 
     if project_version == version:
         print(f'✓ GITHUB_REF matches version {project_version!r}')
-        return 0
     else:
-        print(f'✖ GITHUB_REF version {version!r} does not poetry version {project_version!r}')
-        return 1
+        exit(f'✖ GITHUB_REF version {version!r} does not poetry version {project_version!r}')
+
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+        ver = Version(project_version)
+        is_prerelease = ver.is_prerelease or ver.is_devrelease
+        print(f"is_prerelease={'true' if is_prerelease else 'false'}", file=fh)
+
+    return 0
 
 
 if __name__ == '__main__':
