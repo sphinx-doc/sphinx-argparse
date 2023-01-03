@@ -9,7 +9,7 @@ Most wanted:
  * Bug fixes
  * Examples
 
-Contributions are gratefully accepted through `github <https://github.com/ribozz/sphinx-argparse>`_ pull-request. Please report bugs as issues on github.
+Contributions are gratefully accepted through `github <https://github.com/ashb/sphinx-argparse>`_ pull-request. Please report bugs as issues on github.
 
 Don't forget to run tests before committing::
 
