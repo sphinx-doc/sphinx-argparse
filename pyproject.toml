@@ -32,6 +32,8 @@ mypy = "^0.910"
 types-docutils = "^0.17.0"
 pep8-naming = "^0.13"
 coverage = "^6.5"
+lxml = "^4.9.2"
+lxml-stubs = "^0.4.0"
 
 [tool.poetry.group.dev.dependencies.isort]
 version = "^5.10"
