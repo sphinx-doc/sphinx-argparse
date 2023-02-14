@@ -10,6 +10,8 @@ from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
 from docutils.utils import new_document
 from sphinx.util.nodes import nested_parse_with_titles
+from sphinx.ext.autodoc import mock
+from sphinx.util.docutils import SphinxDirective
 
 from sphinxarg.parser import parse_parser, parser_navigate
 
@@ -255,7 +257,7 @@ def ensure_unique_ids(items):
                 n['ids'] = ids
 
 
-class ArgParseDirective(Directive):
+class ArgParseDirective(SphinxDirective):
     has_content = True
     option_spec = dict(
         module=unchanged,
@@ -469,16 +471,19 @@ class ArgParseDirective(Directive):
         else:
             raise self.error(':module: and :func: should be specified, or :ref:, or :filename: and :func:')
 
+        mock_imports = getattr(self.config,'autodoc_mock_imports',[])
+
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
-            try:
-                mod = __import__(module_name, globals(), locals(), [attr_name])
-            except ImportError:
-                raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}')
+            with mock(mock_imports):
+                try:
+                    mod = __import__(module_name, globals(), locals(), [attr_name])
+                except ImportError:
+                    raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}')
 
-            if not hasattr(mod, attr_name):
-                raise self.error(('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?') % (module_name, attr_name))
-            func = getattr(mod, attr_name)
+                if not hasattr(mod, attr_name):
+                    raise self.error(('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?') % (module_name, attr_name))
+                func = getattr(mod, attr_name)
 
         if isinstance(func, ArgumentParser):
             parser = func
