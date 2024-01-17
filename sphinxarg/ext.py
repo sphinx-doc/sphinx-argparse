@@ -465,6 +465,7 @@ class ArgParseDirective(Directive):
             f = self._open_filename()
             code = compile(f.read(), self.options['filename'], 'exec')
             exec(code, mod)
+            module_name = None
             attr_name = self.options['func']
             func = mod[attr_name]
         else:
