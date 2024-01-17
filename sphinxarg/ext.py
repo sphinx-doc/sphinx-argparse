@@ -86,7 +86,7 @@ def render_list(l, markdown_help, settings=None):
         return all_children
 
 
-def print_action_groups(data, nested_content, markdown_help=False, settings=None):
+def print_action_groups(data, nested_content, markdown_help=False, settings=None, id_prefix=""):
     """
     Process all 'action groups', which are also include 'Options' and 'Required
     arguments'. A list of nodes is returned.
@@ -97,7 +97,8 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
         for action_group in data['action_groups']:
             # Every action group is composed of a section, holding
             # a title, the description, and the option group (members)
-            section = nodes.section(ids=[action_group['title'].replace(' ', '-').lower()])
+            title_as_id = action_group['title'].replace(' ', '-').lower()
+            section = nodes.section(ids=[f"{id_prefix}-{title_as_id}"])
             section += nodes.title(action_group['title'], action_group['title'])
 
             desc = []
@@ -487,6 +488,7 @@ class ArgParseDirective(Directive):
             f = self._open_filename()
             code = compile(f.read(), self.options['filename'], 'exec')
             exec(code, mod)
+            module_name = None
             attr_name = self.options['func']
             func = mod[attr_name]
         else:
@@ -563,6 +565,7 @@ class ArgParseDirective(Directive):
                 nested_content,
                 markdown_help,
                 settings=self.state.document.settings,
+                id_prefix=(f"{module_name}-" if module_name else "") + attr_name,
             )
         )
         if 'nosubcommands' not in self.options:
