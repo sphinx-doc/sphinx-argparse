@@ -533,7 +533,7 @@ class ArgParseDirective(Directive):
                 nested_content,
                 markdown_help,
                 settings=self.state.document.settings,
-                id_prefix=(module_name + "-" or "") + attr_name,
+                id_prefix=(f"{module_name}-" if module_name else "") + attr_name,
             )
         )
         if 'nosubcommands' not in self.options:
