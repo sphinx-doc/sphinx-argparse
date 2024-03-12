@@ -147,6 +147,8 @@ def parse_parser(parser, data=None, **kwargs):
                 }
             if action.choices:
                 option['choices'] = action.choices
+            if action.type:
+                option['type'] = action.type
             if "==SUPPRESS==" not in option['help']:
                 options_list.append(option)
 
