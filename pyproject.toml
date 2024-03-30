@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx-argparse"
-version = "0.4.0"
+version = "0.5.0"
 description = "A sphinx extension that automatically documents argparse commands and options"
 readme = "README.md"
 repository = "https://github.com/ashb/sphinx-argparse"
@@ -17,7 +17,7 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4"
 sphinx = ">=4.0.0"
-CommonMark = { version = ">=0.5.6", optional = true }
+CommonMark = "^0.9.1"
 
 [tool.poetry.extras]
 markdown = ["CommonMark"]
@@ -32,8 +32,9 @@ mypy = "^0.910"
 types-docutils = "^0.17.0"
 pep8-naming = "^0.13"
 coverage = "^6.5"
-lxml = "^4.9.2"
 lxml-stubs = "^0.4.0"
+lxml = "^4.9.2"
+sphinx-rtd-theme = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies.isort]
 version = "^5.10"
@@ -54,6 +55,9 @@ include_trailing_comma = true
 known_first_party = [ "sphinxarg", "test" ]
 line_length = 160
 multi_line_output = 3
+
+[tool.mypy]
+exclude = '''(?x)( ^test/roots | ^docs )'''
 
 [[tool.mypy.overrides]]
 module = [

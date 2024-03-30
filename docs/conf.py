@@ -18,7 +18,7 @@ import sys
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 
-#sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -27,7 +27,14 @@ import sys
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.viewcode', 'sphinxarg.ext']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.intersphinx',
+    'sphinxarg.ext'
+]
 
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -37,6 +44,9 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
+intersphinx_mapping = {
+    'sphinx': ('https://www.sphinx-doc.org/en/master', None)
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -60,9 +70,9 @@ copyright = '2017, Alex Rudakov, Devon Ryan and contributors'
 #
 # The short X.Y version.
 
-import pkg_resources  # part of setuptools
+import sphinxarg.ext
 
-version = pkg_resources.require("sphinx-argparse")[0].version
+version = sphinxarg.ext.__version__
 
 # The full version, including alpha/beta/rc tags.
 release = version

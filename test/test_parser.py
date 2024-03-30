@@ -132,6 +132,10 @@ def test_parse_nested():
                     'options': [{'name': ['--upgrade'], 'default': False, 'help': 'foo2 help'}],
                 },
             ],
+            'parent': {
+                'name': '',
+                'prog': 'under-test',
+            },
         }
     ]
 
@@ -179,6 +183,10 @@ def test_parse_nested_with_alias():
                     ],
                 },
             ],
+            'parent': {
+                'name': '',
+                'prog': 'under-test',
+            },
         }
     ]
 
@@ -199,6 +207,10 @@ def test_aliased_traversal():
         'usage': 'usage: under-test level1 [-h]',
         'name': 'level1 (l1)',
         'identifier': 'level1',
+        'parent': {
+            'name': '',
+            'prog': 'under-test',
+        },
     }
 
 
@@ -226,6 +238,19 @@ def test_parse_nested_traversal():
         {'name': ['bar'], 'help': '', 'default': None},
     ]
 
+    assert data3['parent'] == {
+        'name': 'level2',
+        'prog': '',
+        'parent': {
+            'name': 'level1',
+            'prog': '',
+            'parent': {
+                'name': '',
+                'prog': 'under-test',
+            },
+        },
+    }
+
     data2 = parser_navigate(data, 'level1 level2')
     assert data2['children'] == [
         {
@@ -243,10 +268,12 @@ def test_parse_nested_traversal():
                     ],
                 }
             ],
+            'parent': {'name': 'level2', 'prog': '', 'parent': {'name': 'level1', 'prog': '', 'parent': {'name': '', 'prog': 'under-test'}}},
         }
     ]
 
     assert data == parser_navigate(data, '')
+    assert 'parent' not in data
 
 
 def test_fill_in_default_prog():
@@ -379,6 +406,10 @@ def test_action_groups_with_subcommands():
             'bare_usage': 'foo A [-h] baz',
             'name': 'A',
             'help': 'A subparser',
+            'parent': {
+                'name': '',
+                'prog': 'foo',
+            },
         },
         {
             'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]',
@@ -399,5 +430,9 @@ def test_action_groups_with_subcommands():
             'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]',
             'name': 'B',
             'help': 'B subparser',
+            'parent': {
+                'name': '',
+                'prog': 'foo',
+            },
         },
     ]
