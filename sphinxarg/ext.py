@@ -142,10 +142,9 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                     '"==SUPPRESS=="',
                     '==SUPPRESS==',
                 ]:
-                    if entry['default'] == '':
-                        arg.append('Default: ""')
-                    else:
-                        arg.append(f"Default: {entry['default']}")
+                    # Put the default value in a literal block - but escape backticks already in the string
+                    default_str = str(entry['default']).replace('`', r'\`')
+                    arg.append(f"Default: ``{default_str}``")
 
                 # Handle nested content, the term used in the dict has the comma removed for simplicity
                 desc = arg

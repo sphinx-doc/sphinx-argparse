@@ -29,6 +29,14 @@ from .conftest import check_xpath, flat_dict
                 (".//section[@id='positional-arguments']", ''),
                 (".//section[@id='positional-arguments']/dl/dt[1]/kbd", 'baz'),
             ],
+            'special-characters.html': [
+                (".//h1", 'Sample', False),
+                (".//h1", 'Special Characters'),
+                (".//section/dl/dd/p", 'Default:'),
+                (".//section/dl/dd/p/code/span", '420'),
+                (".//section/dl/dd/p/code/span", "'*.rst"),
+                (".//section/dl/dd/p/code/span", r"\['\*.rst',"),
+            ],
         }
     ),
 )
