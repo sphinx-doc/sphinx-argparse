@@ -111,7 +111,7 @@ def parse_parser(parser, data=None, **kwargs):
             # Quote default values for string/None types
             default = action.default
             if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
-                default = f'"{default}"'
+                default = f"'{default}'"
 
             # fill in any formatters, like %(default)s
             format_dict = dict(vars(action), prog=data.get('prog', ''), default=default)
