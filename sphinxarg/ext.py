@@ -327,7 +327,7 @@ class ArgParseDirective(Directive):
             options_section += nodes.subtitle(text='Positional arguments:')
             options_section += self._format_positional_arguments(parser_info)
         for action_group in parser_info['action_groups']:
-            if 'options' in parser_info:
+            if 'options' in action_group:
                 options_section += nodes.paragraph()
                 options_section += nodes.subtitle(text=action_group['title'])
                 options_section += self._format_optional_arguments(action_group)
