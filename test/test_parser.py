@@ -22,7 +22,7 @@ def test_parse_default():
 
     data = parse_parser(parser)
 
-    assert data['action_groups'][0]['options'] == [{'name': ['--foo'], 'default': '"123"', 'help': ''}]
+    assert data['action_groups'][0]['options'] == [{'name': ['--foo'], 'default': "'123'", 'help': ''}]
 
 
 def test_parse_arg_choices():
@@ -259,9 +259,9 @@ def test_fill_in_default_prog():
 
     assert data['action_groups'][0]['options'] == [
         {
-            'default': '"foo"',
+            'default': "'foo'",
             'name': ['bar'],
-            'help': 'test_fill_in_default_prog (default: "foo")',
+            'help': "test_fill_in_default_prog (default: 'foo')",
         }
     ]
 
@@ -277,9 +277,9 @@ def test_string_quoting():
 
     assert data['action_groups'][0]['options'] == [
         {
-            'default': '"foo bar"',
+            'default': "'foo bar'",
             'name': ['--bar'],
-            'help': 'test_string_quoting_prog (default: "foo bar")',
+            'help': "test_string_quoting_prog (default: 'foo bar')",
         }
     ]
 
