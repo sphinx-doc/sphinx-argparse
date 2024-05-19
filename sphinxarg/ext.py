@@ -445,7 +445,7 @@ class ArgParseDirective(Directive):
         # try open with shutil which
         try:
             return open(shutil.which(self.options['filename']))
-        except OSError:
+        except (OSError, TypeError):
             pass
         # raise exception
         raise FileNotFoundError(self.options['filename'])
