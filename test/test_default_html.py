@@ -82,6 +82,15 @@ def check_xpath(etree, fname, path, check, be_found=True):
                 ('.//section/dl/dd/p/code/span', r"\['\*.rst',"),
             ],
         ),
+        (
+            'default-suppressed.html',
+            [
+                (".//h1", 'Sample', False),
+                (".//h1", 'Default suppressed'),
+                (".//h2", 'Named Arguments'),
+                (".//section/dl/dd/p", 'Default', False),
+            ],
+        ),
     ],
 )
 @pytest.mark.sphinx('html', testroot='default-html')
