@@ -101,10 +101,10 @@ def check_xpath(etree, fname, path, check, be_found=True):
         if be_found:
             if any(rex.search(get_text(node)) for node in nodes):
                 return
-            err_ = f'{check!r} not found in any node matching path {path} in {fname}: {[node.text for node in nodes]!r}')
+            err_ = f'{check!r} not found in any node matching path {path} in {fname}: {[node.text for node in nodes]!r}'
         else:
             if all(not rex.search(get_text(node)) for node in nodes):
                 return
-            err_ = f'Found {check!r} in a node matching path {path} in {fname}: {[node.text for node in nodes]!r}')
+            err_ = f'Found {check!r} in a node matching path {path} in {fname}: {[node.text for node in nodes]!r}'
 
         raise AssertionError(err_)
