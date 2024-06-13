@@ -83,6 +83,14 @@ def render_list(l, markdown_help, settings=None):
         return all_children
 
 
+def is_suppressed(item):
+    """Return whether item should not be printed."""
+    if item is None:
+        return True
+    item = str(item).replace('"', '').replace("'", '')
+    return item == '==SUPPRESS=='
+
+
 def print_action_groups(data, nested_content, markdown_help=False, settings=None):
     """
     Process all 'action groups', which are also include 'Options' and 'Required
@@ -138,10 +146,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                     arg.append(f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n")
                 if 'help' in entry:
                     arg.append(entry['help'])
-                if entry['default'] is not None and entry['default'] not in [
-                    '"==SUPPRESS=="',
-                    '==SUPPRESS==',
-                ]:
+                if not is_suppressed(entry['default']):
                     # Put the default value in a literal block - but escape backticks already in the string
                     default_str = str(entry['default']).replace('`', r'\`')
                     arg.append(f"Default: ``{default_str}``")
@@ -387,10 +392,7 @@ class ArgParseDirective(Directive):
             opt_items = []
             for name in opt['name']:
                 option_declaration = [nodes.option_string(text=name)]
-                if opt['default'] is not None and opt['default'] not in [
-                    '"==SUPPRESS=="',
-                    '==SUPPRESS==',
-                ]:
+                if not is_suppressed(opt['default']):
                     option_declaration += nodes.option_argument('', text='=' + str(opt['default']))
                 names.append(nodes.option('', *option_declaration))
             if opt['help']:
