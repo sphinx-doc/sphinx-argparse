@@ -1,7 +1,7 @@
 """Test the HTML builder and check output against XPath."""
 
-import re
 import posixpath
+import re
 
 import pytest
 from sphinx.ext.intersphinx import INVENTORY_FILENAME
@@ -59,6 +59,7 @@ def check_xpath(etree, fname, path, check, be_found=True):
                 ('.//h1', 'blah-blah', False),
                 (".//div[@class='highlight']//span", 'usage'),
                 ('.//h2', 'Positional Arguments'),
+
                 (".//section[@id='get_parser-positional-arguments']", ''),
                 (
                     ".//section[@id='get_parser-positional-arguments']/dl/dt[1]/kbd",
@@ -114,10 +115,10 @@ def test_default_html(app, cached_etree_parse, fname, expect_list):
 @pytest.mark.sphinx('html', testroot='default-html')
 def test_index_is_optional(app, cached_etree_parse):
     app.build()
-    index_file = app.outdir / "index.html"
+    index_file = app.outdir / 'index.html'
     assert index_file.exists() is True  # Confirm that the build occurred.
 
-    command_index_file = app.outdir / "commands-index.html"
+    command_index_file = app.outdir / 'commands-index.html'
     assert command_index_file.exists() is False
 
 
@@ -131,10 +132,19 @@ def test_object_inventory(app, cached_etree_parse):
         inv: Inventory = InventoryFile.load(f, 'test/path', posixpath.join)
 
     assert 'sample-directive-opts' in inv.get('commands:command')
-    assert 'test/path/index.html#sample-directive-opts' == inv['commands:command']['sample-directive-opts'][2]
+    assert (
+        'test/path/index.html#sample-directive-opts'
+        == inv['commands:command']['sample-directive-opts'][2]
+    )
 
     assert 'sample-directive-opts A' in inv.get('commands:command')
-    assert 'test/path/subcommand-a.html#sample-directive-opts-A' == inv['commands:command']['sample-directive-opts A'][2]
+    assert (
+        'test/path/subcommand-a.html#sample-directive-opts-A'
+        == inv['commands:command']['sample-directive-opts A'][2]
+    )
 
     assert 'sample-directive-opts B' in inv.get('commands:command')
-    assert 'test/path/index.html#sample-directive-opts-B' == inv['commands:command']['sample-directive-opts B'][2]
+    assert (
+        'test/path/index.html#sample-directive-opts-B'
+        == inv['commands:command']['sample-directive-opts B'][2]
+    )

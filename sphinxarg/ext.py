@@ -1,36 +1,46 @@
 from __future__ import annotations
 
-import importlib
 import ast
+import importlib
+import operator
 import os
 import shutil
 import sys
 from argparse import ArgumentParser
 from collections import defaultdict
-from typing import Dict, List, Optional, Union, cast
+from typing import TYPE_CHECKING, cast
 
 from docutils import nodes
 from docutils.frontend import get_default_settings
-from docutils.nodes import Element
 from docutils.parsers.rst import Parser
 from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
+<<<<<<< HEAD
 from sphinx.ext.autodoc import mock
 from sphinx.util.docutils import SphinxDirective, new_document
 from sphinx.addnodes import pending_xref
 from sphinx.application import Sphinx
 from sphinx.builders import Builder
+=======
+>>>>>>> 8831d48 (Ruff)
 from sphinx.domains import Domain, Index
-from sphinx.environment import BuildEnvironment
 from sphinx.errors import ExtensionError
+from sphinx.ext.autodoc import mock
 from sphinx.roles import XRefRole
 from sphinx.util import logging
-from sphinx.util.docutils import SphinxDirective
+from sphinx.util.docutils import SphinxDirective, new_document
 from sphinx.util.nodes import make_id, make_refnode, nested_parse_with_titles
 
 from sphinxarg import __version__
 from sphinxarg.parser import parse_parser, parser_navigate
 from sphinxarg.utils import command_pos_args, target_to_anchor_id
+
+if TYPE_CHECKING:
+    from docutils.nodes import Element
+    from sphinx.addnodes import pending_xref
+    from sphinx.application import Sphinx
+    from sphinx.builders import Builder
+    from sphinx.environment import BuildEnvironment
 
 logger = logging.getLogger(__name__)
 
@@ -318,8 +328,8 @@ class ArgParseDirective(SphinxDirective):
         'markdownhelp': flag,
         'idxgroups': unchanged,
     }
-    domain: Optional[Domain] = None
-    idxgroups: Optional[List[str]] = None
+    domain: Domain | None = None
+    idxgroups: list[str] | None = None
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -442,7 +452,7 @@ class ArgParseDirective(SphinxDirective):
             opt_items = []
             for name in opt['name']:
                 option_declaration = [nodes.option_string(text=name)]
-                if not _is_suppressed(opt['default']):
+                if not self._is_suppressed(opt['default']):
                     option_declaration += nodes.option_argument(
                         '', text='=' + str(opt['default'])
                     )
@@ -524,12 +534,14 @@ class ArgParseDirective(SphinxDirective):
 
         if 'children' in data:
             full_command = command_pos_args(data)
-            node_id = make_id(self.env, self.state.document, '', full_command + "-sub-commands")
+            node_id = make_id(
+                self.env, self.state.document, '', full_command + '-sub-commands'
+            )
             target = nodes.target('', '', ids=[node_id])
             self.set_source_info(target)
             self.state.document.note_explicit_target(target)
 
-            subcommands = nodes.section(ids=[node_id, "Sub-commands"])
+            subcommands = nodes.section(ids=['Sub-commands'])
             subcommands += nodes.title('Sub-commands', 'Sub-commands')
 
             for child in data['children']:
@@ -569,10 +581,14 @@ class ArgParseDirective(SphinxDirective):
                 for element in render_list(desc, markdown_help):
                     sec += element
                 sec += nodes.literal_block(text=child['bare_usage'])
-                for x in self._print_action_groups(child, nested_content + subcontent, markdown_help, settings=settings):
+                for x in self._print_action_groups(
+                    child, nested_content + subcontent, markdown_help, settings=settings
+                ):
                     sec += x
 
-                for x in self._print_subcommands(child, nested_content + subcontent, markdown_help, settings=settings):
+                for x in self._print_subcommands(
+                    child, nested_content + subcontent, markdown_help, settings=settings
+                ):
                     sec += x
 
                 if 'epilog' in child and child['epilog']:
@@ -584,7 +600,14 @@ class ArgParseDirective(SphinxDirective):
 
         return items
 
-    def _print_action_groups(self, data, nested_content, markdown_help=False, settings=None):
+    def _print_action_groups(
+        self,
+        data,
+        nested_content,
+        markdown_help=False,
+        settings=None,
+        id_prefix='',
+    ):
         """
         Process all 'action groups', which are also include 'Options' and 'Required
         arguments'. A list of nodes is returned.
@@ -593,14 +616,21 @@ class ArgParseDirective(SphinxDirective):
         nodes_list = []
         if 'action_groups' in data:
             for action_group in data['action_groups']:
-                # Every action group is comprised of a section, holding a title, the description, and the option group (members)
+                # Every action group is composed of a section, holding
+                # a title, the description, and the option group (members)
                 full_command = command_pos_args(data)
-                node_id = make_id(self.env, self.state.document, '', full_command + "-" + action_group['title'].replace(' ', '-').lower())
+                node_id = make_id(
+                    self.env,
+                    self.state.document,
+                    '',
+                    full_command + '-' + action_group['title'].replace(' ', '-').lower(),
+                )
                 target = nodes.target('', '', ids=[node_id])
                 self.set_source_info(target)
                 self.state.document.note_explicit_target(target)
 
-                section = nodes.section(ids=[node_id, action_group['title'].replace(' ', '-').lower()])
+                title_as_id = action_group['title'].replace(' ', '-').lower()
+                section = nodes.section(ids=[node_id, f'{id_prefix}-{title_as_id}'])
                 section += nodes.title(action_group['title'], action_group['title'])
 
                 desc = []
@@ -627,7 +657,7 @@ class ArgParseDirective(SphinxDirective):
 
                 local_definitions = definitions
                 if len(subcontent) > 0:
-                    local_definitions = {k: v for k, v in definitions.items()}
+                    local_definitions = dict(definitions.items())
                     for k, v in map_nested_definitions(subcontent).items():
                         local_definitions[k] = v
 
@@ -642,19 +672,19 @@ class ArgParseDirective(SphinxDirective):
                     # Build the help text
                     arg = []
                     if 'choices' in entry:
-                        arg.append(f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n")
+                        arg.append(
+                            f"Possible choices: {', '.join(map(str, entry['choices']))}\n"
+                        )
                     if 'help' in entry:
                         arg.append(entry['help'])
-                    if entry['default'] is not None and entry['default'] not in [
-                        '"==SUPPRESS=="',
-                        '==SUPPRESS==',
-                    ]:
-                        if entry['default'] == '':
-                            arg.append('Default: ""')
-                        else:
-                            arg.append(f"Default: {entry['default']}")
+                    if not self._is_suppressed(entry['default']):
+                        # Put the default value in a literal block,
+                        # but escape backticks already in the string
+                        default_str = str(entry['default']).replace('`', r'\`')
+                        arg.append(f'Default: ``{default_str}``')
 
-                    # Handle nested content, the term used in the dict has the comma removed for simplicity
+                    # Handle nested content, the term used in the dict
+                    # has the comma removed for simplicity
                     desc = arg
                     term = ' '.join(entry['name'])
                     if term in local_definitions:
@@ -679,8 +709,18 @@ class ArgParseDirective(SphinxDirective):
 
         return nodes_list
 
+    @staticmethod
+    def _is_suppressed(item: str | None) -> bool:
+        """Return whether item should not be printed."""
+        if item is None:
+            return True
+        item = str(item).replace('"', '').replace("'", '')
+        return item == '==SUPPRESS=='
+
     def run(self):
-        self.domain = cast(SphinxArgParseDomain, self.env.get_domain(SphinxArgParseDomain.name))
+        self.domain = cast(
+            SphinxArgParseDomain, self.env.get_domain(SphinxArgParseDomain.name)
+        )
 
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
@@ -769,11 +809,14 @@ class ArgParseDirective(SphinxDirective):
         if 'idxgroups' in self.options:
             try:
                 self.idxgroups = ast.literal_eval(self.options['idxgroups'])
-            except (SyntaxError, ValueError):
-                message = f"""Error in "{self.name}". In file "{self.env.doc2path(self.env.docname, False)}"
-                failed to parse idxgroups as a list: "{self.state_machine.line.strip()}".
-                """
-                raise self.error(message)
+            except (SyntaxError, ValueError) as exc:
+                message = (
+                    f'Error in "{self.name}". '
+                    f'In file "{self.env.doc2path(self.env.docname, False)}" '
+                    'failed to parse idxgroups as a list: '
+                    f'"{self.state_machine.line.strip()}".'
+                )
+                raise self.error(message) from exc
             self.idxgroups = [x.strip() for x in self.idxgroups]
         else:
             self.idxgroups = []
@@ -823,10 +866,18 @@ class CommandsIndex(Index):
         content = defaultdict(list)
 
         commands = self.domain.get_objects()
-        commands = sorted(commands, key=lambda command: command[0])
+        commands = sorted(commands, key=operator.itemgetter(0))
 
         for cmd, dispname, _typ, docname, anchor, priority in commands:
-            content[cmd[0].lower()].append((cmd, priority, docname, anchor, docname, '', dispname))
+            content[cmd[0].lower()].append((
+                cmd,
+                priority,
+                docname,
+                anchor,
+                docname,
+                '',
+                dispname,
+            ))
 
         content = sorted(content.items())
         return content, True
@@ -842,7 +893,7 @@ class CommandsByGroupIndex(Index):
         bygroups = self.domain.data['commands-by-group']
 
         for group in sorted(bygroups):
-            commands = sorted(bygroups[group], key=lambda command: command[0])
+            commands = sorted(bygroups[group], key=operator.itemgetter(0))
             for cmd, dispname, _typ, docname, anchor, priority in commands:
                 content[group].append((cmd, priority, docname, anchor, docname, '', dispname))
 
@@ -855,8 +906,8 @@ class SphinxArgParseDomain(Domain):
     label = 'commands-label'
 
     roles = {'command': XRefRole()}
-    indices = {}  # type: ignore
-    initial_data: Dict[str, Union[List, Dict]] = {
+    indices = {}
+    initial_data: dict[str, list | dict] = {
         'commands': [],
         'commands-by-group': defaultdict(list),
     }
@@ -864,7 +915,7 @@ class SphinxArgParseDomain(Domain):
     # Keep a list of the temporary index files that are created in the
     # source directory. The files are created if the command_xxx_in_toctree
     # option is set to True.
-    temporary_index_files: List[str] = []
+    temporary_index_files: list[str] = []
 
     def get_full_qualified_name(self, node):
         return f'{node.arguments[0]}'
@@ -872,9 +923,22 @@ class SphinxArgParseDomain(Domain):
     def get_objects(self):
         yield from self.data['commands']
 
-    def resolve_xref(self, env: BuildEnvironment, fromdocname: str, builder: Builder, typ: str, target: str, node: pending_xref, contnode: Element):
+    def resolve_xref(
+        self,
+        env: BuildEnvironment,
+        fromdocname: str,
+        builder: Builder,
+        typ: str,
+        target: str,
+        node: pending_xref,
+        contnode: Element,
+    ):
         anchor_id = target_to_anchor_id(target)
-        match = [(docname, anchor) for _cmd, _sig, _type, docname, anchor, _prio in self.get_objects() if anchor_id == anchor]
+        match = [
+            (docname, anchor)
+            for _cmd, _sig, _type, docname, anchor, _prio in self.get_objects()
+            if anchor_id == anchor
+        ]
 
         if len(match) > 0:
             todocname = match[0][0]
@@ -882,13 +946,14 @@ class SphinxArgParseDomain(Domain):
 
             return make_refnode(builder, fromdocname, todocname, targ, contnode, targ)
         else:
-            logger.warning(f'Error, no command xref target from {fromdocname}:{target}')
+            msg = f'Error, no command xref target from {fromdocname}:{target}'
+            logger.warning(msg)
             return None
 
-    def add_command(self, result: Dict, anchor: str, groups: List[str] = None):
+    def add_command(self, result: dict, anchor: str, groups: list[str] = None):
         """Add an argparse command to the domain."""
         full_command = command_pos_args(result)
-        desc = "No description."
+        desc = 'No description.'
         if 'description' in result:
             desc = result['description']
         idx_entry = (full_command, desc, 'command', self.env.docname, anchor, 0)
@@ -914,13 +979,19 @@ def create_temp_dummy_file(app: Sphinx, domain: Domain, docname: str, title: str
     dummy_file = os.path.join(app.srcdir, docname)
     domain = cast(SphinxArgParseDomain, domain)
     if os.path.exists(dummy_file):
-        raise ExtensionError(f'The Sphinx project cannot include a file named "{docname}" in the source directory.')
-    with open(dummy_file, "w") as f:
-        f.write(f"{title}\n")
+        msg = (
+            f'The Sphinx project cannot include a file named '
+            f'"{docname}" in the source directory.'
+        )
+        raise ExtensionError(msg)
+    with open(dummy_file, 'w') as f:
+        f.write(f'{title}\n')
         f.write(f"{len(title) * '='}\n")
-        f.write("\n")
-        f.write("Temporary file that is replaced with an index from the sphinxarg extension.\n")
-        f.write(f"Creating this temporary file enables you to add {docname} to the toctree.\n")
+        f.write('\n')
+        f.write(
+            'Temporary file that is replaced with an index from the sphinxarg extension.\n'
+        )
+        f.write(f'Creating this temporary file enables you to add {docname} to the toctree.\n')
     domain.temporary_index_files.append(dummy_file)
 
 
@@ -939,17 +1010,17 @@ def configure_ext(app: Sphinx) -> None:
         by_group_index.localname = conf.get('commands_by_group_index_title')
     if ('commands_index_in_toctree', True) in conf.items():
         build_index = True
-        docname = f"{SphinxArgParseDomain.name}-{CommandsIndex.name}.rst"
-        create_temp_dummy_file(app, domain, docname, f"{CommandsIndex.localname}")
+        docname = f'{SphinxArgParseDomain.name}-{CommandsIndex.name}.rst'
+        create_temp_dummy_file(app, domain, docname, f'{CommandsIndex.localname}')
     if ('commands_by_group_index_in_toctree', True) in conf.items():
         build_by_group_index = True
-        docname = f"{SphinxArgParseDomain.name}-{by_group_index.name}.rst"
-        create_temp_dummy_file(app, domain, docname, f"{by_group_index.localname}")
+        docname = f'{SphinxArgParseDomain.name}-{by_group_index.name}.rst'
+        create_temp_dummy_file(app, domain, docname, f'{by_group_index.localname}')
 
     if build_index or ('build_commands_index', True) in conf.items():
-        domain.indices.append(CommandsIndex)  # type: ignore
+        domain.indices.append(CommandsIndex)
     if build_by_group_index or ('build_commands_by_group_index', True) in conf.items():
-        domain.indices.append(by_group_index)  # type: ignore
+        domain.indices.append(by_group_index)
 
     # Call setup so that :ref:`commands-...` are link targets.
     domain.setup()
@@ -959,7 +1030,7 @@ def setup(app: Sphinx):
     app.setup_extension('sphinx.ext.autodoc')
     app.add_domain(SphinxArgParseDomain)
     app.add_directive('argparse', ArgParseDirective)
-    app.add_config_value('sphinx_argparse_conf', {}, 'html', Dict)
+    app.add_config_value('sphinx_argparse_conf', {}, 'html', dict)
     app.connect('builder-inited', configure_ext)
     app.connect('build-finished', delete_dummy_file)
     return {

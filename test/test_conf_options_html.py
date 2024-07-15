@@ -6,24 +6,22 @@ from .conftest import check_xpath, flat_dict
 
 
 @pytest.mark.parametrize(
-    "fname,expect",
-    flat_dict(
-        {
-            'index.html': [
-                (".//h1", 'Sample'),
-                (".//h2", 'Sub-commands'),
-                (".//h3", 'sample-directive-opts A'),  # By default, just "A".
-                (".//h3", 'sample-directive-opts B'),
-            ],
-        }
-    ),
+    ('fname', 'expect'),
+    flat_dict({
+        'index.html': [
+            ('.//h1', 'Sample'),
+            ('.//h2', 'Sub-commands'),
+            ('.//h3', 'sample-directive-opts A'),  # By default, just "A".
+            ('.//h3', 'sample-directive-opts B'),
+        ],
+    }),
 )
 @pytest.mark.sphinx(
     'html',
     testroot='conf-opts-html',
     confoverrides={
         'sphinx_argparse_conf': {
-            "full_subcommand_name": True,
+            'full_subcommand_name': True,
         }
     },
 )

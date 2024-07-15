@@ -1,1 +1,1 @@
-extensions = ["sphinxarg.ext"]
+extensions = ['sphinxarg.ext']

@@ -20,7 +20,7 @@ def command_pos_args(result: dict) -> str:
     >>> command_pos_args("blah")
     ''
     """
-    ret = ""
+    ret = ''
 
     if 'name' in result and result['name'] != '':
         ret += f"{result['name']}"
@@ -43,12 +43,13 @@ def target_to_anchor_id(target: str) -> str:
     'simple-command-A'
     """
     if len(target) < 1:
-        raise ValueError('Supplied target string is less than one character long.')
+        msg = 'Supplied target string is less than one character long.'
+        raise ValueError(msg)
 
     return target.replace(' ', '-')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import doctest
 
     doctest.testmod()
