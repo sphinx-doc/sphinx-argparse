@@ -6,7 +6,7 @@
    :target: https://pypi.org/project/sphinx-argparse/
    :alt: PyPI version
 
-.. image:: https://anaconda.org/conda-forge/sphinx-argparse/badges/installer/conda.svg
+.. image:: https://img.shields.io/conda/vn/conda-forge/sphinx-argparse.svg
    :target: https://github.com/conda-forge/sphinx-argparse-feedstock/
    :alt: Conda version
 
