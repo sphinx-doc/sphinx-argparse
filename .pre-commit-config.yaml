@@ -27,7 +27,7 @@ repos:
     rev: v3.2.2
     hooks:
       - id: pyupgrade
-        args: ["--py37-plus"]
+        args: ["--py310-plus"]
   - repo: https://github.com/ikamensh/flynt/
     rev: '0.76'
     hooks:

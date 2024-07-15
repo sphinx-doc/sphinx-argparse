@@ -153,10 +153,8 @@ def parse_parser(parser, data=None, **kwargs):
         if len(options_list) == 0:
             continue
 
-        # Upper case "Positional Arguments" and "Optional Arguments" titles
-        # Since python-3.10 'optional arguments' changed to 'options'
-        # more info: https://github.com/python/cpython/pull/23858
-        if action_group.title == 'optional arguments' or action_group.title == 'options':
+        # Upper case "Positional Arguments" and "Named Arguments" titles
+        if action_group.title == 'options':
             action_group.title = 'Named Arguments'
         if action_group.title == 'positional arguments':
             action_group.title = 'Positional Arguments'
