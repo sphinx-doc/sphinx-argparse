@@ -5,4 +5,4 @@ Fails to parse
    :filename: test/sample-directive-opts.py
    :prog: sample-directive-opts
    :func: get_parser
-   :idxgroups: "Needs"; "Commas"
+   :index-groups: Needs; Commas

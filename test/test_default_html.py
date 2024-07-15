@@ -3,7 +3,7 @@
 import posixpath
 
 import pytest
-from sphinx.util.inventory import Inventory, InventoryFile
+from sphinx.util.inventory import InventoryFile
 
 from test.utils.xpath import check_xpath
 
@@ -88,7 +88,7 @@ def test_object_inventory(app, cached_etree_parse):
     assert inventory_file.exists() is True
 
     with inventory_file.open('rb') as f:
-        inv: Inventory = InventoryFile.load(f, 'test/path', posixpath.join)
+        inv = InventoryFile.load(f, 'test/path', posixpath.join)
 
     assert 'sample-directive-opts' in inv.get('commands:command')
     assert (

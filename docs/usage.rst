@@ -119,7 +119,7 @@ Other useful directives
 
 :passparser: This can be used if you don't have a function that returns an argument parser, but rather adds commands to it (``:func:`` is then that function).
 
-:idxgroups: This option is related to grouping related commands in an index.
+:index-groups: This option is related to grouping related commands in an index.
 
 
 Printing Fully Qualified Sub-Command Headings
@@ -181,8 +181,8 @@ To enable the more complex index, add the following to the project ``conf.py`` f
       "commands_by_group_index_in_toctree": True,
     }
 
-Add the ``:idxgroups:`` option to the ``argparse`` directive in your documentation files.
-Specify one or more groups that the command belongs to.
+Add the ``:index-groups:`` option to the ``argparse`` directive in your documentation files.
+Specify one or more groups that the command belongs to (comma-separated).
 
 .. code-block:: reStructuredText
 
@@ -190,7 +190,7 @@ Specify one or more groups that the command belongs to.
        :filename: ../test/sample.py
        :func: parser
        :prog: sample
-       :idxgroups: ["Basic Commands"]
+       :index-groups: Basic Commands
 
 For an HTML build, the index is created with the file name ``commands-by-group.html`` in the output directory.
 You can cross reference the index from other files with the ``:ref:`commands-by-group``` role.
