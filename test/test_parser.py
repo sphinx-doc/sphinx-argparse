@@ -274,7 +274,15 @@ def test_parse_nested_traversal():
                     ],
                 }
             ],
-            'parent': {'name': 'level2', 'prog': '', 'parent': {'name': 'level1', 'prog': '', 'parent': {'name': '', 'prog': 'under-test'}}},
+            'parent': {
+                'name': 'level2',
+                'prog': '',
+                'parent': {
+                    'name': 'level1',
+                    'prog': '',
+                    'parent': {'name': '', 'prog': 'under-test'},
+                },
+            },
         }
     ]
 
