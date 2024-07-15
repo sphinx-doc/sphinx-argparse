@@ -6,4 +6,4 @@ Command A
    :prog: sample-directive-opts
    :func: get_parser
    :path: A
-   :idxgroups: ["spam on a stick"]
+   :index-groups: spam on a stick

@@ -8,7 +8,7 @@ Change log
 The following enhancements to the HTML output are described on the [Usage](https://sphinx-argparse.readthedocs.io/en/latest/usage.html) page.
 
 * Optional command index.
-* Optional ``:idxgroups:`` field to the directive for an command-by-group index.
+* Optional ``:index-groups:`` field to the directive for an command-by-group index.
 * A ``full_subcommand_name`` option to print fully-qualified sub-command headings.
   This option helps when more than one sub-command offers a ``create`` or ``list`` or other
   repeated sub-command.

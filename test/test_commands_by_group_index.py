@@ -67,7 +67,7 @@ from test.utils.xpath import check_xpath
                 '(other)',
                 False,
             ),
-        ),  # Other does not have idxgroups set at all and is not present.
+        ),  # Other does not have index-groups set at all and is not present.
     ],
 )
 @pytest.mark.sphinx('html', testroot='command-by-group-index')
