@@ -4,49 +4,71 @@ from pathlib import Path
 import pytest
 
 from sphinxarg.ext import CommandsByGroupIndex
-
-from .conftest import check_xpath, flat_dict
+from test.utils.xpath import check_xpath
 
 
 @pytest.mark.parametrize(
     ('fname', 'expect'),
-    flat_dict({
-        'index.html': [
+    [
+        (
+            'index.html',
             (".//div[@role='navigation']//a[@class='reference internal']", 'Sample'),
+        ),
+        (
+            'index.html',
             (".//div[@role='navigation']//a[@class='reference internal']", 'Command A'),
+        ),
+        (
+            'index.html',
             (".//div[@role='navigation']//a[@class='reference internal']", 'Command B'),
+        ),
+        (
+            'index.html',
             (
                 ".//div[@role='navigation']//a[@class='reference internal']",
                 'Commands by Group',
             ),
-        ],
-        'commands-by-group.html': [
-            ('.//h1', 'Commands by Group'),
-            ('.//tr/td[2]/strong', 'ham in a cone'),
+        ),
+        ('commands-by-group.html', ('.//h1', 'Commands by Group')),
+        ('commands-by-group.html', ('.//tr/td[2]/strong', 'ham in a cone')),
+        (
+            'commands-by-group.html',
             (
                 ".//tr[td[2]/strong/text()='ham in a cone']/following-sibling::tr[1]/td[2]/a/code",  # NoQA: E501
                 'sample-directive-opts',
             ),
+        ),
+        (
+            'commands-by-group.html',
             (
                 ".//tr[td[2]/strong/text()='ham in a cone']/following-sibling::tr[2]/td[2]/a/code",  # NoQA: E501
                 'sample-directive-opts B',
             ),
-            ('.//tr/td[2]/strong', 'spam'),
+        ),
+        ('commands-by-group.html', ('.//tr/td[2]/strong', 'spam')),
+        (
+            'commands-by-group.html',
             (
                 ".//tr[td[2]/strong/text()='spam on a stick']/following-sibling::tr[1]/td[2]/a/code",  # NoQA: E501
                 'sample-directive-opts',
             ),
+        ),
+        (
+            'commands-by-group.html',
             (
                 ".//tr[td[2]/strong/text()='spam on a stick']/following-sibling::tr[2]/td[2]/a/code",  # NoQA: E501
                 'sample-directive-opts A',
             ),
+        ),
+        (
+            'commands-by-group.html',
             (
                 './/tr/td[2]/em',
                 '(other)',
                 False,
-            ),  # Other does not have idxgroups set at all and is not present.
-        ],
-    }),
+            ),
+        ),  # Other does not have idxgroups set at all and is not present.
+    ],
 )
 @pytest.mark.sphinx('html', testroot='command-by-group-index')
 def test_commands_by_group_index_html(app, cached_etree_parse, fname, expect):
@@ -56,18 +78,17 @@ def test_commands_by_group_index_html(app, cached_etree_parse, fname, expect):
 
 @pytest.mark.parametrize(
     ('fname', 'expect'),
-    flat_dict({
-        'index.html': [
+    [
+        (
+            'index.html',
             (
                 ".//div[@role='navigation']//a[@class='reference internal']",
                 'Commands grouped by SomeName',
             ),
-        ],
-        'commands-groupedby-somename.html': [
-            ('.//h1', 'Commands grouped by SomeName'),
-            ('.//h1', 'Commands by Group', False),
-        ],
-    }),
+        ),
+        ('commands-groupedby-somename.html', ('.//h1', 'Commands grouped by SomeName')),
+        ('commands-groupedby-somename.html', ('.//h1', 'Commands by Group', False)),
+    ],
 )
 @pytest.mark.sphinx(
     'html',

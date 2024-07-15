@@ -2,19 +2,17 @@
 
 import pytest
 
-from .conftest import check_xpath, flat_dict
+from test.utils.xpath import check_xpath
 
 
 @pytest.mark.parametrize(
     ('fname', 'expect'),
-    flat_dict({
-        'index.html': [
-            ('.//h1', 'Sample'),
-            ('.//h2', 'Sub-commands'),
-            ('.//h3', 'sample-directive-opts A'),  # By default, just "A".
-            ('.//h3', 'sample-directive-opts B'),
-        ],
-    }),
+    [
+        ('index.html', ('.//h1', 'Sample')),
+        ('index.html', ('.//h2', 'Sub-commands')),
+        ('index.html', ('.//h3', 'sample-directive-opts A')),  # By default, just "A".
+        ('index.html', ('.//h3', 'sample-directive-opts B')),
+    ],
 )
 @pytest.mark.sphinx(
     'html',

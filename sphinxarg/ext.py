@@ -36,6 +36,8 @@ from sphinxarg.parser import parse_parser, parser_navigate
 from sphinxarg.utils import command_pos_args, target_to_anchor_id
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from docutils.nodes import Element
     from sphinx.addnodes import pending_xref
     from sphinx.application import Sphinx
@@ -329,7 +331,7 @@ class ArgParseDirective(SphinxDirective):
         'idxgroups': unchanged,
     }
     domain: Domain | None = None
-    idxgroups: list[str] | None = None
+    idxgroups: Sequence[str] = ()
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -905,8 +907,10 @@ class SphinxArgParseDomain(Domain):
     name = 'commands'
     label = 'commands-label'
 
-    roles = {'command': XRefRole()}
-    indices = {}
+    roles = {
+        'command': XRefRole(),
+    }
+    indices = []
     initial_data: dict[str, list | dict] = {
         'commands': [],
         'commands-by-group': defaultdict(list),
@@ -950,7 +954,7 @@ class SphinxArgParseDomain(Domain):
             logger.warning(msg)
             return None
 
-    def add_command(self, result: dict, anchor: str, groups: list[str] = None):
+    def add_command(self, result: dict, anchor: str, groups: Sequence[str] = ()):
         """Add an argparse command to the domain."""
         full_command = command_pos_args(result)
         desc = 'No description.'
@@ -963,7 +967,7 @@ class SphinxArgParseDomain(Domain):
         # A separate list is kept to avoid the edge case that a command is used
         # once as part of a group (with idxgroups) and another time without the
         # option.
-        for group in groups or []:
+        for group in groups:
             self.data['commands-by-group'][group].append(idx_entry)
 
 
