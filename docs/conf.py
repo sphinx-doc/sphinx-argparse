@@ -10,7 +10,7 @@ exclude_patterns = ['_build']
 
 project = 'sphinx-argparse'
 copyright = '2017, Alex Rudakov, Devon Ryan, and contributors'
-release = version = '0.2.5'
+release = version = '0.5.0'
 
 # -- Options for intersphinx ---------------------------------------------------
 
