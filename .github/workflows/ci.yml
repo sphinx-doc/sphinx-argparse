@@ -2,7 +2,15 @@ name: CI
 
 on:
   push:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "sphinxarg/**"
+      - "test/**"
   pull_request:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "sphinxarg/**"
+      - "test/**"
   workflow_dispatch:
 
 permissions:
@@ -23,9 +31,9 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-        - '3.10'
-        - '3.11'
-        - '3.12'
+        - "3.10"
+        - "3.11"
+        - "3.12"
 
     steps:
       - uses: actions/checkout@v4
