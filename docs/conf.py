@@ -2,6 +2,7 @@
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinxarg.ext',
 ]
@@ -10,6 +11,12 @@ exclude_patterns = ['_build']
 project = 'sphinx-argparse'
 copyright = '2017, Alex Rudakov, Devon Ryan, and contributors'
 release = version = '0.2.5'
+
+# -- Options for intersphinx ---------------------------------------------------
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+}
 
 # -- Options for HTML output ---------------------------------------------------
 

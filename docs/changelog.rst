@@ -2,6 +2,28 @@
 Change log
 **********
 
+0.5.0
+#####
+
+* Add HTML tests to avoid regressions.
+  Patch by Mike McKiernan in https://github.com/sphinx-doc/sphinx-argparse/pull/33
+* Escape reStructuredText special characters in the default value.
+  Patch by Robert Roos.
+* Fix the options formatter for manpages.
+  Patch by Felix Moessbauer in https://github.com/sphinx-doc/sphinx-argparse/pull/50
+* Handle ``None`` return from :py:func:`shutil.which`.
+  Patch by Om Vats in https://github.com/sphinx-doc/sphinx-argparse/pull/52
+* Drop support for Python 3.7, 3.8, and 3.9.
+  Patch by Adam Turner.
+* Adopt `Flit <https://flit.pypa.io/>`_ for packaging.
+  Patch by Adam Turner.
+* Make argument and option section IDs more unique.
+  Patch by David Hoese in https://github.com/sphinx-doc/sphinx-argparse/pull/44
+* Fix cases where a suppressed default was visible.
+  Patch by Michele Riva in https://github.com/sphinx-doc/sphinx-argparse/pull/53
+* Support ``autodoc_mock_imports``.
+  Patch by Adam Turner and Prajeesh Ag in https://github.com/sphinx-doc/sphinx-argparse/pull/35
+
 0.4.0
 #####
 
