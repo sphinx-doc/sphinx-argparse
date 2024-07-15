@@ -14,9 +14,8 @@ from docutils.statemachine import StringList
 from docutils.utils import new_document
 from sphinx.util.nodes import nested_parse_with_titles
 
+from sphinxarg import __version__
 from sphinxarg.parser import parse_parser, parser_navigate
-
-from . import __version__
 
 
 def map_nested_definitions(nested_content):
