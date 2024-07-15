@@ -14,7 +14,6 @@ from docutils.statemachine import StringList
 from sphinx.util.docutils import new_document
 from sphinx.util.nodes import nested_parse_with_titles
 from sphinx.ext.autodoc import mock
-from sphinx.util.docutils import SphinxDirective
 
 from sphinxarg import __version__
 from sphinxarg.parser import parse_parser, parser_navigate
@@ -280,7 +279,7 @@ def ensure_unique_ids(items):
                 n['ids'] = ids
 
 
-class ArgParseDirective(SphinxDirective):
+class ArgParseDirective(Directive):
     has_content = True
     option_spec = {
         'module': unchanged,
@@ -505,26 +504,24 @@ class ArgParseDirective(SphinxDirective):
             msg = ':module: and :func: should be specified, or :ref:, or :filename: and :func:'
             raise self.error(msg)
 
-        mock_imports = getattr(self.config,'autodoc_mock_imports',[])
-
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
-            with mock(mock_imports):
+            with mock(self.config.autodoc_mock_imports):
                 try:
                     mod = importlib.import_module(module_name)
-                except ImportErroras exc:
+                except ImportError as exc:
                     msg = (
-                    f'Failed to import "{attr_name}" from "{module_name}".\n'
-                    f'{sys.exc_info()[1]}'
-                )
-                raise self.error(msg) from exc
+                        f'Failed to import "{attr_name}" from "{module_name}".\n'
+                        f'{sys.exc_info()[1]}'
+                    )
+                    raise self.error(msg) from exc
 
                 if not hasattr(mod, attr_name):
                     msg = (
-                    f'Module "{module_name}" has no attribute "{attr_name}"\n'
-                    f'Incorrect argparse :module: or :func: values?'
-                )
-                raise self.error(msg)
+                        f'Module "{module_name}" has no attribute "{attr_name}"\n'
+                        f'Incorrect argparse :module: or :func: values?'
+                    )
+                    raise self.error(msg)
                 func = getattr(mod, attr_name)
 
         if isinstance(func, ArgumentParser):
@@ -600,6 +597,7 @@ class ArgParseDirective(SphinxDirective):
 
 
 def setup(app):
+    app.setup_extension('sphinx.ext.autodoc')
     app.add_directive('argparse', ArgParseDirective)
     return {
         'version': __version__,
