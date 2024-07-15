@@ -37,23 +37,23 @@ repos:
       - id: mypy
         name: mypy
         language: system
-        entry: poetry run mypy
+        entry: mypy
         types: [python]
         exclude: ^docs/
       - id: black
         name: black
         language: system
-        entry: poetry run black
+        entry: black
         types: [python]
         exclude: ^docs/conf\.py$
       - id: flake8
         name: flake8
         language: system
-        entry: poetry run flake8
+        entry: flake8
         types: [python]
         exclude: ^docs/conf\.py$
       - id: isort
         name: isort
         language: system
-        entry: poetry run isort
+        entry: isort
         types: [python]

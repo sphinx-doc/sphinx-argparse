@@ -1,47 +1,87 @@
-[tool.poetry]
-name = "sphinx-argparse"
-version = "0.4.0"
-description = "A sphinx extension that automatically documents argparse commands and options"
-readme = "README.md"
-repository = "https://github.com/ashb/sphinx-argparse"
-authors = ["Ash Berlin-Taylor <ash_github@firemirror.com>"]
-license = "MIT"
-classifiers = [
-  "Framework :: Sphinx :: Extension",
-]
-packages = [
-  { include = "sphinxarg" },
-  { include = "test", format = "sdist" },
-]
-
-[tool.poetry.dependencies]
-python = ">=3.10"
-sphinx = ">=4.0.0"
-CommonMark = { version = ">=0.5.6", optional = true }
-
-[tool.poetry.extras]
-markdown = ["CommonMark"]
-
-[tool.poetry.group.dev.dependencies]
-flake8 = "^5.0"
-pytest = "^7.2"
-pytest-deadfixtures = "^2.2"
-flake8-bugbear = "^22.10.27"
-black = {version = "^22", python = ">=3.6.2"}
-mypy = "^0.910"
-types-docutils = "^0.17.0"
-pep8-naming = "^0.13"
-coverage = "^6.5"
-lxml = "^4.9.2"
-lxml-stubs = "^0.4.0"
-
-[tool.poetry.group.dev.dependencies.isort]
-version = "^5.10"
-markers = "python_version < '4.0'"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["flit_core>=3.7"]
+build-backend = "flit_core.buildapi"
+
+# project metadata
+[project]
+name = "sphinx-argparse"
+description = "A sphinx extension that automatically documents argparse commands and options"
+readme = "README.rst"
+urls.Changelog = "https://sphinx-argparse.readthedocs.io/en/latest/changelog.html"
+urls.Code = "https://github.com/ashb/sphinx-argparse"
+urls.Download = "https://pypi.org/project/sphinx-argparse/"
+urls.Homepage = "https://sphinx-argparse.readthedocs.io/"
+urls."Issue tracker" = "https://github.com/sphinx-doc/sphinx-argparse/issues"
+license.text = "MIT"
+requires-python = ">=3.10"
+
+# Classifiers list: https://pypi.org/classifiers/
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Framework :: Sphinx",
+    "Framework :: Sphinx :: Extension",
+    "Topic :: Documentation",
+    "Topic :: Documentation :: Sphinx",
+]
+dependencies = [
+    "sphinx>=4.0.0",
+]
+dynamic = ["version"]
+
+
+[project.optional-dependencies]
+markdown = [
+    "CommonMark>=0.5.6"
+]
+lint = [
+    "flake8>=6.0",
+    "flake8-bugbear>=22.10",
+    "black>=22.0",
+    "mypy>=1.10",
+    "types-docutils>=0.21",
+    "pep8-naming>=0.13",
+    "isort>=5.10",
+]
+test = [
+    "pytest>=8.0",
+    "pytest-deadfixtures>=2.2",
+    "coverage>=6.5",
+    "lxml>=4.9",
+    "lxml-stubs>=0.4",
+    "setuptools>=70.0",  # for Cython compilation
+    "typing_extensions>=4.9",  # for typing_extensions.Unpack
+]
+
+[[project.authors]]
+name = "Ash Berlin-Taylor"
+email = "ash_github@firemirror.com"
+
+[tool.flit.module]
+name = "sphinxarg"
+
+[tool.flit.sdist]
+include = [
+    "LICENCE.rst",
+    # Documentation
+    "docs/",
+    # Tests
+    "test/",
+]
+exclude = [
+    "docs/_build",
+]
 
 [tool.black]
 line-length = 160

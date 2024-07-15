@@ -1,53 +1,45 @@
-name: Test
+name: CI
 
 on:
   push:
-    branches: [ main ]
-    tags:
-      - '**'
   pull_request:
-    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 env:
-  PRE_COMMIT_COLOR: always
+  FORCE_COLOR: "1"
 
 jobs:
   # We only need to lint once, not for _each_ python version
   lint:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: "3"
-        os: [ubuntu-latest]
-    env:
-      PYTHON: ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Install poetry
-      run: pipx install poetry
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: poetry
-    - name: Install pre-commit
-      run: pipx install pre-commit
-    - name: Cache pre-commitdeps
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/pre-commit/
-        key: precommit-py${{ matrix.python-version }}-precommit-${{ hashFiles('poetry.lock', '.pre-commit-config.yaml') }}
-        restore-keys: precommit-py${{ matrix.python-version }}-
-    - name: Install dependencies
-      run: poetry install --no-root
-    - name: Lint
-      run: |
-        pre-commit run --all-files -v --show-diff-on-failure
-        pre-commit gc
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3"
+      - name: Install pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Lint
+        run: |
+          pre-commit run --all-files -v --show-diff-on-failure
+          pre-commit gc
+
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
@@ -55,29 +47,29 @@ jobs:
         - '3.10'
         - '3.11'
         - '3.12'
-        os: [ubuntu-latest]
-    env:
-      PYTHON: ${{ matrix.python-version }}
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Install poetry
-      run: pipx install poetry
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: poetry
-    - name: Install dependencies
-      run: poetry install
-    - name: Test with pytest
-      run: |
-        make test args="--color=yes"
-        poetry run coverage run -m pytest --dead-fixtures --dup-fixtures --color=yes
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1.5.0
-      with:
-        flags: unittests
-        env_vars: PYTHON
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check Python version
+        run: python --version --version
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .[test]
+      - name: Test with pytest
+        run: >
+          python -m pytest
+          -vv
+          --dead-fixtures --dup-fixtures
+          --cov . --cov-append --cov-config pyproject.toml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          flags: unittests
 
   check:
     if: always()
@@ -90,62 +82,60 @@ jobs:
         jobs: ${{ toJSON(needs) }}
 
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: "3"
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
     name: build
     # only run on push to main and on release, or with tag
     if: "success() && (startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'Full Build'))"
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Install poetry
-      run: pipx install poetry
-    - name: set up python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'poetry'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3"
 
-    - run: poetry build
+      - name: Install build dependencies (pypa/build)
+        run: |
+          pip install -U pip
+          pip install build
 
-    - run: ls -altrh dist/
-      shell: bash
+      - name: Build distribution
+        run: python -m build
 
-    - uses: actions/upload-artifact@v3
-      with:
-        name: pypi_files
-        path: dist
+      - run: ls -altrh dist/
+        shell: bash
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: pypi_files
+          path: dist
 
   inspect-pypi-assets:
     needs: [build]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: get dist artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: pypi_files
-        path: dist
+      - name: get dist artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: pypi_files
+          path: dist
 
-    - name: list dist files
-      run: |
-        ls -lh dist/
-        echo "`ls dist | wc -l` files"
-    - name: extract and list sdist file
-      run: |
-        mkdir sdist-files
-        tar -xvf dist/*.tar.gz -C sdist-files
-        tree -a sdist-files
-    - name: extract and list wheel file
-      run: |
-        ls dist/*.whl | head -n 1
-        python -m zipfile --list `ls dist/*.whl | head -n 1`
+      - name: list dist files
+        run: |
+          ls -lh dist/
+          echo "`ls dist | wc -l` files"
+      - name: extract and list sdist file
+        run: |
+          mkdir sdist-files
+          tar -xvf dist/*.tar.gz -C sdist-files
+          tree -a sdist-files
+      - name: extract and list wheel file
+        run: |
+          ls dist/*.whl | head -n 1
+          python -m zipfile --list `ls dist/*.whl | head -n 1`
 
   release:
     needs: [build, check]
@@ -153,35 +143,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Install poetry
-      run: pipx install poetry
-    - name: set up python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-        cache: 'poetry'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3"
 
-    - id: check-version
-      name: check package version
-      run: .github/check-version.py
+      - name: Install build dependencies (twine)
+        run: |
+          pip install -U pip
+          pip install twine
 
-    - name: get dist artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: pypi_files
-        path: dist
+      - name: get dist artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: pypi_files
+          path: dist
 
-    - name: upload to pypi
-      run: poetry publish
-      env:
-        POETRY_PYPI_TOKEN_PYPI: ${{ secrets.pypi_token }}
+      - name: Upload to PyPI
+        env:
+          TWINE_NON_INTERACTIVE: "true"
+          TWINE_USERNAME: "__token__"
+          TWINE_PASSWORD: "${{ secrets.pypi_token }}"
+        run: |
+          twine check dist/*
+          twine upload dist/*
 
-    - name: upload to github release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          dist/*
-        generate_release_notes: true
-        prerelease: ${{ steps.check-version.output.is_prerelease }}
+      - name: upload to github release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*
+          generate_release_notes: true
