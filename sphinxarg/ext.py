@@ -20,7 +20,8 @@ from sphinxarg.parser import parse_parser, parser_navigate
 
 def map_nested_definitions(nested_content):
     if nested_content is None:
-        raise Exception('Nested content should be iterable, not null')
+        msg = 'Nested content should be iterable, not null'
+        raise Exception(msg)
     # build definition dictionary
     definitions = {}
     for item in nested_content:
@@ -37,13 +38,14 @@ def map_nested_definitions(nested_content):
                 ci = subitem[idx]
                 if len(ci.children) > 0:
                     classifier = ci.children[0].astext()
-            if classifier is not None and classifier not in (
+            if classifier is not None and classifier not in {
                 '@replace',
                 '@before',
                 '@after',
                 '@skip',
-            ):
-                raise Exception(f'Unknown classifier: {classifier}')
+            }:
+                msg = f'Unknown classifier: {classifier}'
+                raise Exception(msg)
             idx = subitem.first_child_matching_class(nodes.term)
             if idx is not None:
                 term = subitem[idx]
@@ -51,10 +53,9 @@ def map_nested_definitions(nested_content):
                     term = term.children[0].astext()
                     idx = subitem.first_child_matching_class(nodes.definition)
                     if idx is not None:
-                        subcontent = []
-                        for _ in subitem[idx]:
-                            if isinstance(_, nodes.definition_list):
-                                subcontent.append(_)
+                        subcontent = [
+                            _ for _ in subitem[idx] if isinstance(_, nodes.definition_list)
+                        ]
                         definitions[term] = (classifier, subitem[idx], subcontent)
 
     return definitions
@@ -123,7 +124,7 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
 
             local_definitions = definitions
             if len(subcontent) > 0:
-                local_definitions = {k: v for k, v in definitions.items()}
+                local_definitions = dict(definitions.items())
                 for k, v in map_nested_definitions(subcontent).items():
                     local_definitions[k] = v
 
@@ -267,23 +268,23 @@ def ensure_unique_ids(items):
 
 class ArgParseDirective(Directive):
     has_content = True
-    option_spec = dict(
-        module=unchanged,
-        func=unchanged,
-        ref=unchanged,
-        prog=unchanged,
-        path=unchanged,
-        nodefault=flag,
-        nodefaultconst=flag,
-        filename=unchanged,
-        manpage=unchanged,
-        nosubcommands=unchanged,
-        passparser=flag,
-        noepilog=unchanged,
-        nodescription=unchanged,
-        markdown=flag,
-        markdownhelp=flag,
-    )
+    option_spec = {
+        'module': unchanged,
+        'func': unchanged,
+        'ref': unchanged,
+        'prog': unchanged,
+        'path': unchanged,
+        'nodefault': flag,
+        'nodefaultconst': flag,
+        'filename': unchanged,
+        'manpage': unchanged,
+        'nosubcommands': unchanged,
+        'passparser': flag,
+        'noepilog': unchanged,
+        'nodescription': unchanged,
+        'markdown': flag,
+        'markdownhelp': flag,
+    }
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -489,25 +490,26 @@ class ArgParseDirective(Directive):
             attr_name = self.options['func']
             func = mod[attr_name]
         else:
-            raise self.error(
-                ':module: and :func: should be specified, or :ref:, or :filename: and :func:'
-            )
+            msg = ':module: and :func: should be specified, or :ref:, or :filename: and :func:'
+            raise self.error(msg)
 
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
             try:
                 mod = importlib.import_module(module_name)
             except ImportError as exc:
-                raise self.error(
+                msg = (
                     f'Failed to import "{attr_name}" from "{module_name}".\n'
                     f'{sys.exc_info()[1]}'
-                ) from exc
+                )
+                raise self.error(msg) from exc
 
             if not hasattr(mod, attr_name):
-                raise self.error(
+                msg = (
                     f'Module "{module_name}" has no attribute "{attr_name}"\n'
                     f'Incorrect argparse :module: or :func: values?'
                 )
+                raise self.error(msg)
             func = getattr(mod, attr_name)
 
         if isinstance(func, ArgumentParser):
@@ -542,9 +544,9 @@ class ArgParseDirective(Directive):
             self.state.nested_parse(self.content, self.content_offset, nested_content)
             nested_content = nested_content.children
         # add common content between
-        for item in nested_content:
-            if not isinstance(item, nodes.definition_list):
-                items.append(item)
+        items += [
+            item for item in nested_content if not isinstance(item, nodes.definition_list)
+        ]
 
         markdown_help = False
         if 'markdownhelp' in self.options:

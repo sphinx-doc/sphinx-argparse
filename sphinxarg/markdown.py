@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import contextlib
+
+from docutils import nodes
+from docutils.utils.code_analyzer import Lexer
+
 try:
     from commonmark import Parser
 except ImportError:
@@ -8,8 +13,6 @@ try:
     from commonmark.node import Node
 except ImportError:
     from CommonMark.node import Node
-from docutils import nodes
-from docutils.utils.code_analyzer import Lexer
 
 
 def custom_walker(node, space=''):
@@ -30,10 +33,8 @@ def custom_walker(node, space=''):
     Spaces are used to convey nesting
     """
     txt = ''
-    try:
+    with contextlib.suppress(Exception):
         txt = node.literal
-    except Exception:
-        pass
 
     if txt is None or txt == '':
         print(f'{space}{node.t}')
@@ -124,9 +125,10 @@ def literal(node):
     rendered = []
     try:
         if node.info is not None:
-            l = Lexer(node.literal, node.info, tokennames='long')
-            for _ in l:
-                rendered.append(node.inline(classes=_[0], text=_[1]))
+            rendered = [
+                node.inline(classes=_[0], text=_[1])
+                for _ in Lexer(node.literal, node.info, tokennames='long')
+            ]
     except Exception:
         pass
 
@@ -149,12 +151,14 @@ def literal_block(node):
     """
     A block of code
     """
+
     rendered = []
     try:
         if node.info is not None:
-            l = Lexer(node.literal, node.info, tokennames='long')
-            for _ in l:
-                rendered.append(node.inline(classes=_[0], text=_[1]))
+            rendered = [
+                node.inline(classes=_[0], text=_[1])
+                for _ in Lexer(node.literal, node.info, tokennames='long')
+            ]
     except Exception:
         pass
 
@@ -206,9 +210,8 @@ def section(node):
     This is a custom type
     """
     title = ''  # All sections need an id
-    if node.first_child is not None:
-        if node.first_child.t == 'heading':
-            title = node.first_child.first_child.literal
+    if node.first_child is not None and node.first_child.t == 'heading':
+        title = node.first_child.first_child.literal
     o = nodes.section(ids=[title], names=[title])
     for n in markdown(node):
         o += n

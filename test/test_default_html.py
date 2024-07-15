@@ -35,14 +35,15 @@ def check_xpath(etree, fname, path, check, be_found=True):
             if all(not rex.search(get_text(node)) for node in nodes):
                 return
 
-        raise AssertionError(
+        msg = (
             f'{check!r} not found in any node matching path {path} in {fname}: '
             f'{[node.text for node in nodes]!r}'
         )
+        raise AssertionError(msg)
 
 
 @pytest.mark.parametrize(
-    'fname,expect_list',
+    ('fname', 'expect_list'),
     [
         (
             'index.html',
