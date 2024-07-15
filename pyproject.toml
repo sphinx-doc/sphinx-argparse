@@ -63,6 +63,10 @@ test = [
     "setuptools>=70.0",  # for Cython compilation
     "typing_extensions>=4.9",  # for typing_extensions.Unpack
 ]
+docs = [
+    "furo>=2024",
+    "CommonMark>=0.5.6",
+]
 
 [[project.authors]]
 name = "Ash Berlin-Taylor"

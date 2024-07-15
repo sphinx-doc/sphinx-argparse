@@ -13,7 +13,7 @@ release = version = '0.2.5'
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 pygments_style = 'sphinx'
 
 htmlhelp_basename = 'sphinxargparsedoc'
