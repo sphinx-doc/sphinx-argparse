@@ -583,4 +583,8 @@ class ArgParseDirective(Directive):
 
 def setup(app):
     app.add_directive('argparse', ArgParseDirective)
-    return {'parallel_read_safe': True, 'version': __version__}
+    return {
+        'version': __version__,
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
+    }
