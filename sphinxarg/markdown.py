@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 try:
     from commonmark import Parser
 except ImportError:

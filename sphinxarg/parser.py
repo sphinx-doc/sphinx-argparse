@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 from argparse import _HelpAction, _StoreConstAction, _SubParsersAction
 
