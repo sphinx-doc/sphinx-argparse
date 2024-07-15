@@ -11,6 +11,7 @@ from docutils.frontend import get_default_settings
 from docutils.parsers.rst import Directive, Parser
 from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
+from sphinx.ext.autodoc import mock
 from sphinx.util.docutils import new_document
 from sphinx.util.nodes import nested_parse_with_titles
 
@@ -505,22 +506,23 @@ class ArgParseDirective(Directive):
 
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
-            try:
-                mod = importlib.import_module(module_name)
-            except ImportError as exc:
-                msg = (
-                    f'Failed to import "{attr_name}" from "{module_name}".\n'
-                    f'{sys.exc_info()[1]}'
-                )
-                raise self.error(msg) from exc
+            with mock(self.config.autodoc_mock_imports):
+                try:
+                    mod = importlib.import_module(module_name)
+                except ImportError as exc:
+                    msg = (
+                        f'Failed to import "{attr_name}" from "{module_name}".\n'
+                        f'{sys.exc_info()[1]}'
+                    )
+                    raise self.error(msg) from exc
 
-            if not hasattr(mod, attr_name):
-                msg = (
-                    f'Module "{module_name}" has no attribute "{attr_name}"\n'
-                    f'Incorrect argparse :module: or :func: values?'
-                )
-                raise self.error(msg)
-            func = getattr(mod, attr_name)
+                if not hasattr(mod, attr_name):
+                    msg = (
+                        f'Module "{module_name}" has no attribute "{attr_name}"\n'
+                        f'Incorrect argparse :module: or :func: values?'
+                    )
+                    raise self.error(msg)
+                func = getattr(mod, attr_name)
 
         if isinstance(func, ArgumentParser):
             parser = func
@@ -595,6 +597,7 @@ class ArgParseDirective(Directive):
 
 
 def setup(app):
+    app.setup_extension('sphinx.ext.autodoc')
     app.add_directive('argparse', ArgParseDirective)
     return {
         'version': __version__,
