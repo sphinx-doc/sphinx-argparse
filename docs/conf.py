@@ -21,22 +21,37 @@ htmlhelp_basename = 'sphinxargparsedoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_documents = [
-  ('index', 'sphinx-argparse.tex', 'sphinx-argparse Documentation',
-   'Alex Rudakov, Devon Ryan, and contributors', 'manual'),
+    (
+        'index',
+        'sphinx-argparse.tex',
+        'sphinx-argparse Documentation',
+        'Alex Rudakov, Devon Ryan, and contributors',
+        'manual',
+    ),
 ]
 
 # -- Options for manual page output --------------------------------------------
 
 man_pages = [
-    ('index', 'sphinx-argparse', 'sphinx-argparse Documentation',
-     ['Alex Rudakov', 'Devon Ryan'], True)
+    (
+        'index',
+        'sphinx-argparse',
+        'sphinx-argparse Documentation',
+        ['Alex Rudakov', 'Devon Ryan'],
+        True,
+    )
 ]
 
 # -- Options for Texinfo output ------------------------------------------------
 
 texinfo_documents = [
-  ('index', 'sphinx-argparse', 'sphinx-argparse Documentation',
-   'Alex Rudakov, Devon Ryan, and contributors', 'sphinx-argparse',
-   'A sphinx extension that automatically documents argparse commands and options.',
-   'Miscellaneous'),
+    (
+        'index',
+        'sphinx-argparse',
+        'sphinx-argparse Documentation',
+        'Alex Rudakov, Devon Ryan, and contributors',
+        'sphinx-argparse',
+        'A sphinx extension that automatically documents argparse commands and options.',
+        'Miscellaneous',
+    ),
 ]

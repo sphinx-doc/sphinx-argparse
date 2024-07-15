@@ -12,7 +12,8 @@ from docutils.utils.code_analyzer import Lexer
 
 def custom_walker(node, space=''):
     """
-    A convenience function to ease debugging. It will print the node structure that's returned from CommonMark
+    A convenience function to ease debugging.
+    It will print the node structure that's returned from CommonMark.
 
     The usage would be something like:
 
@@ -82,7 +83,8 @@ def softbreak(node):
 
 def reference(node):
     """
-    A hyperlink. Note that alt text doesn't work, since there's no apparent way to do that in docutils
+    A hyperlink. Note that alt text doesn't work,
+    since there's no apparent way to do that in docutils
     """
     o = nodes.reference()
     o['refuri'] = node.destination
@@ -120,7 +122,7 @@ def literal(node):
     rendered = []
     try:
         if node.info is not None:
-            l = Lexer(node.literal, node.info, tokennames="long")
+            l = Lexer(node.literal, node.info, tokennames='long')
             for _ in l:
                 rendered.append(node.inline(classes=_[0], text=_[1]))
     except Exception:
@@ -148,7 +150,7 @@ def literal_block(node):
     rendered = []
     try:
         if node.info is not None:
-            l = Lexer(node.literal, node.info, tokennames="long")
+            l = Lexer(node.literal, node.info, tokennames='long')
             for _ in l:
                 rendered.append(node.inline(classes=_[0], text=_[1]))
     except Exception:

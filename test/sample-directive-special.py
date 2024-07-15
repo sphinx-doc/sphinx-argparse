@@ -16,13 +16,13 @@ def get_parser():
     parser.add_argument(
         '--some-text',
         help='Scalar text input',
-        default="*.rst _txt_ **strong** *italic* ``code``",
+        default='*.rst _txt_ **strong** *italic* ``code``',
     )
     parser.add_argument(
         '--list-text',
         help='List input for some bits of text',
-        default=["*.rst", "_txt_", "**strong**", "*italic*", "``code``"],
-        nargs="+",
+        default=['*.rst', '_txt_', '**strong**', '*italic*', '``code``'],
+        nargs='+',
     )
 
     return parser

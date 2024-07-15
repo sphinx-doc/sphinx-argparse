@@ -1,4 +1,5 @@
 """Test HTML output the same way that Sphinx does in test_build_html.py."""
+
 import re
 from itertools import chain, cycle
 from pathlib import Path
@@ -10,7 +11,7 @@ from lxml import etree as lxmltree
 from sphinx.testing.path import path as sphinx_path
 from sphinx.testing.util import SphinxTestApp
 
-pytest_plugins = "sphinx.testing.fixtures"
+pytest_plugins = 'sphinx.testing.fixtures'
 
 etree_cache: Dict[str, str] = {}
 
@@ -36,7 +37,7 @@ class SphinxBuilder:
     def build(self, assert_pass=True):
         self.app.build()
         if assert_pass:
-            assert self.warnings == "", self.status
+            assert self.warnings == '', self.status
         return self
 
     @property
@@ -105,4 +106,7 @@ def check_xpath(etree, fname, path, check, be_found=True):
             if all(not rex.search(get_text(node)) for node in nodes):
                 return
 
-        raise AssertionError(f'{check!r} not found in any node matching path {path} in {fname}: {[node.text for node in nodes]!r}')
+        raise AssertionError(
+            f'{check!r} not found in any node matching path {path} in {fname}: '
+            f'{[node.text for node in nodes]!r}'
+        )

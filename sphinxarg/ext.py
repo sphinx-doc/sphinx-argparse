@@ -92,7 +92,8 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
     nodes_list = []
     if 'action_groups' in data:
         for action_group in data['action_groups']:
-            # Every action group is comprised of a section, holding a title, the description, and the option group (members)
+            # Every action group is composed of a section, holding
+            # a title, the description, and the option group (members)
             section = nodes.section(ids=[action_group['title'].replace(' ', '-').lower()])
             section += nodes.title(action_group['title'], action_group['title'])
 
@@ -135,18 +136,22 @@ def print_action_groups(data, nested_content, markdown_help=False, settings=None
                 # Build the help text
                 arg = []
                 if 'choices' in entry:
-                    arg.append(f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n")
+                    arg.append(
+                        f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n"
+                    )
                 if 'help' in entry:
                     arg.append(entry['help'])
                 if entry['default'] is not None and entry['default'] not in [
                     '"==SUPPRESS=="',
                     '==SUPPRESS==',
                 ]:
-                    # Put the default value in a literal block - but escape backticks already in the string
+                    # Put the default value in a literal block,
+                    # but escape backticks already in the string
                     default_str = str(entry['default']).replace('`', r'\`')
-                    arg.append(f"Default: ``{default_str}``")
+                    arg.append(f'Default: ``{default_str}``')
 
-                # Handle nested content, the term used in the dict has the comma removed for simplicity
+                # Handle nested content, the term used in the dict
+                # has the comma removed for simplicity
                 desc = arg
                 term = ' '.join(entry['name'])
                 if term in local_definitions:
@@ -185,7 +190,7 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
     definitions = map_nested_definitions(nested_content)
     items = []
     if 'children' in data:
-        subcommands = nodes.section(ids=["Sub-commands"])
+        subcommands = nodes.section(ids=['Sub-commands'])
         subcommands += nodes.title('Sub-commands', 'Sub-commands')
 
         for child in data['children']:
@@ -213,10 +218,14 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
             for element in render_list(desc, markdown_help):
                 sec += element
             sec += nodes.literal_block(text=child['bare_usage'])
-            for x in print_action_groups(child, nested_content + subcontent, markdown_help, settings=settings):
+            for x in print_action_groups(
+                child, nested_content + subcontent, markdown_help, settings=settings
+            ):
                 sec += x
 
-            for x in print_subcommands(child, nested_content + subcontent, markdown_help, settings=settings):
+            for x in print_subcommands(
+                child, nested_content + subcontent, markdown_help, settings=settings
+            ):
                 sec += x
 
             if 'epilog' in child and child['epilog']:
@@ -247,9 +256,9 @@ def ensure_unique_ids(items):
                         s.add(id)
                     else:
                         i = 1
-                        while f"{id}_repeat{i}" in s:
+                        while f'{id}_repeat{i}' in s:
                             i += 1
-                        ids[idx] = f"{id}_repeat{i}"
+                        ids[idx] = f'{id}_repeat{i}'
                         s.add(ids[idx])
                 n['ids'] = ids
 
@@ -290,7 +299,7 @@ class ArgParseDirective(Directive):
         synopsis_section = nodes.section(
             '',
             nodes.title(text='Synopsis'),
-            nodes.literal_block(text=parser_info["bare_usage"]),
+            nodes.literal_block(text=parser_info['bare_usage']),
             ids=['synopsis-section'],
         )
         items.append(synopsis_section)
@@ -302,7 +311,7 @@ class ArgParseDirective(Directive):
                 nodes.paragraph(
                     text=parser_info.get(
                         'description',
-                        parser_info.get('help', "undocumented").capitalize(),
+                        parser_info.get('help', 'undocumented').capitalize(),
                     )
                 ),
                 ids=['description-section'],
@@ -320,7 +329,9 @@ class ArgParseDirective(Directive):
                 description_section = nodes.paragraph(text=parser_info['epilog'])
                 items.append(description_section)
         # OPTIONS section
-        options_section = nodes.section('', nodes.title(text='Options'), ids=['options-section'])
+        options_section = nodes.section(
+            '', nodes.title(text='Options'), ids=['options-section']
+        )
         if 'args' in parser_info:
             options_section += nodes.paragraph()
             options_section += nodes.subtitle(text='Positional arguments:')
@@ -341,18 +352,20 @@ class ArgParseDirective(Directive):
             items.append(options_section)
         if 'nosubcommands' not in self.options:
             # SUBCOMMANDS section (non-standard)
-            subcommands_section = nodes.section('', nodes.title(text='Sub-Commands'), ids=['subcommands-section'])
+            subcommands_section = nodes.section(
+                '', nodes.title(text='Sub-Commands'), ids=['subcommands-section']
+            )
             if 'children' in parser_info:
                 subcommands_section += self._format_subcommands(parser_info)
             if len(subcommands_section) > 1:
                 items.append(subcommands_section)
-        if os.getenv("INCLUDE_DEBUG_SECTION"):
+        if os.getenv('INCLUDE_DEBUG_SECTION'):
             import json
 
             # DEBUG section (non-standard)
             debug_section = nodes.section(
                 '',
-                nodes.title(text="Argparse + Sphinx Debugging"),
+                nodes.title(text='Argparse + Sphinx Debugging'),
                 nodes.literal_block(text=json.dumps(parser_info, indent='  ')),
                 ids=['debug-section'],
             )
@@ -369,11 +382,15 @@ class ArgParseDirective(Directive):
             elif 'choices' not in arg:
                 arg_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
-                arg_items.append(nodes.paragraph(text='Possible choices: ' + ', '.join(arg['choices'])))
+                arg_items.append(
+                    nodes.paragraph(text='Possible choices: ' + ', '.join(arg['choices']))
+                )
             items.append(
                 nodes.option_list_item(
                     '',
-                    nodes.option_group('', nodes.option('', nodes.option_string(text=arg['metavar']))),
+                    nodes.option_group(
+                        '', nodes.option('', nodes.option_string(text=arg['metavar']))
+                    ),
                     nodes.description('', *arg_items),
                 )
             )
@@ -391,14 +408,18 @@ class ArgParseDirective(Directive):
                     '"==SUPPRESS=="',
                     '==SUPPRESS==',
                 ]:
-                    option_declaration += nodes.option_argument('', text='=' + str(opt['default']))
+                    option_declaration += nodes.option_argument(
+                        '', text='=' + str(opt['default'])
+                    )
                 names.append(nodes.option('', *option_declaration))
             if opt['help']:
                 opt_items.append(nodes.paragraph(text=opt['help']))
             elif 'choices' not in opt:
                 opt_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
-                opt_items.append(nodes.paragraph(text='Possible choices: ' + ', '.join(opt['choices'])))
+                opt_items.append(
+                    nodes.paragraph(text='Possible choices: ' + ', '.join(opt['choices']))
+                )
             items.append(
                 nodes.option_list_item(
                     '',
@@ -428,7 +449,7 @@ class ArgParseDirective(Directive):
 
     def _nested_parse_paragraph(self, text):
         content = nodes.paragraph()
-        self.state.nested_parse(StringList(text.split("\n")), 0, content)
+        self.state.nested_parse(StringList(text.split('\n')), 0, content)
         return content
 
     def _open_filename(self):
@@ -466,17 +487,28 @@ class ArgParseDirective(Directive):
             attr_name = self.options['func']
             func = mod[attr_name]
         else:
-            raise self.error(':module: and :func: should be specified, or :ref:, or :filename: and :func:')
+            raise self.error(
+                ':module: and :func: should be specified, or :ref:, or :filename: and :func:'
+            )
 
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
             try:
                 mod = __import__(module_name, globals(), locals(), [attr_name])
             except ImportError as exc:
-                raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}') from exc
+                raise self.error(
+                    f'Failed to import "{attr_name}" from "{module_name}".\n'
+                    f'{sys.exc_info()[1]}'
+                ) from exc
 
             if not hasattr(mod, attr_name):
-                raise self.error(('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?') % (module_name, attr_name))
+                raise self.error(
+                    (
+                        'Module "%s" has no attribute "%s"\n'
+                        'Incorrect argparse :module: or :func: values?'
+                    )
+                    % (module_name, attr_name)
+                )
             func = getattr(mod, attr_name)
 
         if isinstance(func, ArgumentParser):

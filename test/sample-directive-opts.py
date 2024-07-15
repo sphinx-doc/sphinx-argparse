@@ -2,7 +2,9 @@ import argparse
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(prog='sample-directive-opts', description='Support SphinxArgParse HTML testing')
+    parser = argparse.ArgumentParser(
+        prog='sample-directive-opts', description='Support SphinxArgParse HTML testing'
+    )
     subparsers = parser.add_subparsers()
     parser_a = subparsers.add_parser('A', help='A subparser')
     parser_a.add_argument('baz', type=int, help='An integer')

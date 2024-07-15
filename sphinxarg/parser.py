@@ -15,7 +15,9 @@ def parser_navigate(parser_result, path, current_path=None):
     if len(path) == 0:
         return parser_result
     if 'children' not in parser_result:
-        raise NavigationException(f"Current parser has no child elements.  (path: {' '.join(current_path)})")
+        raise NavigationException(
+            f"Current parser has no child elements.  (path: {' '.join(current_path)})"
+        )
     next_hop = path.pop(0)
     for child in parser_result['children']:
         # identifer is only used for aliased subcommands
@@ -23,7 +25,10 @@ def parser_navigate(parser_result, path, current_path=None):
         if identifier == next_hop:
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
-    raise NavigationException(f"Current parser has no child element with name: {next_hop}  (path: {' '.join(current_path)})")
+    raise NavigationException(
+        f"Current parser has no child element with name: {next_hop} "
+        f"(path: {' '.join(current_path)})"
+    )
 
 
 def _try_add_parser_attribute(data, parser, attribname):
@@ -110,7 +115,11 @@ def parse_parser(parser, data=None, **kwargs):
 
             # Quote default values for string/None types
             default = action.default
-            if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+            if (
+                action.default not in ['', None, True, False]
+                and action.type in [None, str]
+                and isinstance(action.default, str)
+            ):
                 default = f"'{default}'"
 
             # fill in any formatters, like %(default)s
@@ -147,7 +156,7 @@ def parse_parser(parser, data=None, **kwargs):
                 }
             if action.choices:
                 option['choices'] = action.choices
-            if "==SUPPRESS==" not in option['help']:
+            if '==SUPPRESS==' not in option['help']:
                 options_list.append(option)
 
         if len(options_list) == 0:

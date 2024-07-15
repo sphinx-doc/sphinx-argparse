@@ -22,7 +22,9 @@ def test_parse_default():
 
     data = parse_parser(parser)
 
-    assert data['action_groups'][0]['options'] == [{'name': ['--foo'], 'default': "'123'", 'help': ''}]
+    assert data['action_groups'][0]['options'] == [
+        {'name': ['--foo'], 'default': "'123'", 'help': ''}
+    ]
 
 
 def test_parse_arg_choices():
@@ -63,7 +65,9 @@ def test_parse_default_skip_default():
 
     data = parse_parser(parser, skip_default_values=True)
 
-    assert data['action_groups'][0]['options'] == [{'name': ['--foo'], 'default': '==SUPPRESS==', 'help': ''}]
+    assert data['action_groups'][0]['options'] == [
+        {'name': ['--foo'], 'default': '==SUPPRESS==', 'help': ''}
+    ]
 
 
 def test_parse_positional():
@@ -129,7 +133,9 @@ def test_parse_nested():
                 {
                     'description': None,
                     'title': 'Named Arguments',
-                    'options': [{'name': ['--upgrade'], 'default': False, 'help': 'foo2 help'}],
+                    'options': [
+                        {'name': ['--upgrade'], 'default': False, 'help': 'foo2 help'}
+                    ],
                 },
             ],
         }
@@ -268,8 +274,10 @@ def test_fill_in_default_prog():
 
 def test_string_quoting():
     """
-    If an optional argument has a string type and a default, then the default should be in quotes.
-    This prevents things like '--optLSFConf=-q short' when '--optLSFConf="-q short"' is correct.
+    If an optional argument has a string type and a default,
+    then the default should be in quotes.
+    This prevents things like '--optLSFConf=-q short'
+    when '--optLSFConf="-q short"' is correct.
     """
     parser = argparse.ArgumentParser(prog='test_string_quoting_prog')
     parser.add_argument('--bar', default='foo bar', help='%(prog)s (default: %(default)s)')
@@ -289,8 +297,8 @@ def test_parse_groups():
     parser.add_argument('--foo', action='store_true', default=False, help='foo help')
     parser.add_argument('--bar', action='store_true', default=False)
     optional = parser.add_argument_group('Group 1')
-    optional.add_argument("--option1", help='option #1')
-    optional.add_argument("--option2", help='option #2')
+    optional.add_argument('--option1', help='option #1')
+    optional.add_argument('--option2', help='option #2')
 
     data = parse_parser(parser)
     assert data['action_groups'] == [

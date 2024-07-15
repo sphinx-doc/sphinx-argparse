@@ -6,15 +6,15 @@ from .conftest import check_xpath
 
 
 @pytest.mark.parametrize(
-    "fname,expect_list",
+    'fname,expect_list',
     [
         (
             'index.html',
             [
-                (".//h1", 'Sample'),
-                (".//h1", 'blah-blah', False),
+                ('.//h1', 'Sample'),
+                ('.//h1', 'blah-blah', False),
                 (".//div[@class='highlight']//span", 'usage'),
-                (".//h2", 'Positional Arguments'),
+                ('.//h2', 'Positional Arguments'),
                 (".//section[@id='positional-arguments']", ''),
                 (".//section[@id='positional-arguments']/dl/dt[1]/kbd", 'foo2 metavar'),
                 (".//section[@id='named-arguments']", ''),
@@ -26,10 +26,10 @@ from .conftest import check_xpath
         (
             'subcommand-a.html',
             [
-                (".//h1", 'Sample', False),
-                (".//h1", 'Command A'),
+                ('.//h1', 'Sample', False),
+                ('.//h1', 'Command A'),
                 (".//div[@class='highlight']//span", 'usage'),
-                (".//h2", 'Positional Arguments'),
+                ('.//h2', 'Positional Arguments'),
                 (".//section[@id='positional-arguments']", ''),
                 (".//section[@id='positional-arguments']/dl/dt[1]/kbd", 'baz'),
             ],
@@ -37,12 +37,12 @@ from .conftest import check_xpath
         (
             'special-characters.html',
             [
-                (".//h1", 'Sample', False),
-                (".//h1", 'Special Characters'),
-                (".//section/dl/dd/p", 'Default:'),
-                (".//section/dl/dd/p/code/span", '420'),
-                (".//section/dl/dd/p/code/span", "'*.rst"),
-                (".//section/dl/dd/p/code/span", r"\['\*.rst',"),
+                ('.//h1', 'Sample', False),
+                ('.//h1', 'Special Characters'),
+                ('.//section/dl/dd/p', 'Default:'),
+                ('.//section/dl/dd/p/code/span', '420'),
+                ('.//section/dl/dd/p/code/span', "'*.rst"),
+                ('.//section/dl/dd/p/code/span', r"\['\*.rst',"),
             ],
         ),
     ],
