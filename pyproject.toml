@@ -46,13 +46,9 @@ markdown = [
     "CommonMark>=0.5.6"
 ]
 lint = [
-    "flake8>=6.0",
-    "flake8-bugbear>=22.10",
-    "black>=22.0",
+    "ruff>=0.5",
     "mypy>=1.10",
     "types-docutils>=0.21",
-    "pep8-naming>=0.13",
-    "isort>=5.10",
 ]
 test = [
     "pytest>=8.0",

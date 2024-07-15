@@ -472,8 +472,8 @@ class ArgParseDirective(Directive):
         if 'filename' not in self.options:
             try:
                 mod = __import__(module_name, globals(), locals(), [attr_name])
-            except ImportError:
-                raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}')
+            except ImportError as exc:
+                raise self.error(f'Failed to import "{attr_name}" from "{module_name}".\n{sys.exc_info()[1]}') from exc
 
             if not hasattr(mod, attr_name):
                 raise self.error(('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?') % (module_name, attr_name))
