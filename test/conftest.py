@@ -3,7 +3,6 @@
 import re
 from itertools import chain, cycle
 from pathlib import Path
-from typing import Dict
 
 import pytest
 from docutils import nodes
@@ -13,7 +12,7 @@ from sphinx.testing.util import SphinxTestApp
 
 pytest_plugins = 'sphinx.testing.fixtures'
 
-etree_cache: Dict[str, str] = {}
+etree_cache: dict[str, str] = {}
 
 
 @pytest.fixture(scope='session')

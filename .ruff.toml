@@ -11,6 +11,7 @@ select = [
     "FLY", # flynt
     "I",   # isort
     "N",   # pep8-naming
+    "UP",  # pyupgrade
     "W",   # pycodestyle
 ]
 ignore = [
