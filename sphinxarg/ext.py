@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import os
 import shutil
 import sys
@@ -496,7 +497,7 @@ class ArgParseDirective(Directive):
         # Skip this if we're dealing with a local file, since it obviously can't be imported
         if 'filename' not in self.options:
             try:
-                mod = __import__(module_name, globals(), locals(), [attr_name])
+                mod = importlib.import_module(module_name)
             except ImportError as exc:
                 raise self.error(
                     f'Failed to import "{attr_name}" from "{module_name}".\n'
