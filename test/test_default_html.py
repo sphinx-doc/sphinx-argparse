@@ -31,13 +31,17 @@ def check_xpath(etree, fname, path, check, be_found=True):
         if be_found:
             if any(rex.search(get_text(node)) for node in nodes):
                 return
-            msg = (f'{check!r} not found in any node matching path {path} in {fname}: '
-                   f'{[node.text for node in nodes]!r}')
+            msg = (
+                f'{check!r} not found in any node matching path {path} in {fname}: '
+                f'{[node.text for node in nodes]!r}'
+            )
         else:
             if all(not rex.search(get_text(node)) for node in nodes):
                 return
-            msg = (f'Found {check!r} in a node matching path {path} in {fname}: '
-                   f'{[node.text for node in nodes]!r}')
+            msg = (
+                f'Found {check!r} in a node matching path {path} in {fname}: '
+                f'{[node.text for node in nodes]!r}'
+            )
 
         raise AssertionError(msg)
 
@@ -85,10 +89,10 @@ def check_xpath(etree, fname, path, check, be_found=True):
         (
             'default-suppressed.html',
             [
-                (".//h1", 'Sample', False),
-                (".//h1", 'Default suppressed'),
-                (".//h2", 'Named Arguments'),
-                (".//section/dl/dd/p", 'Default', False),
+                ('.//h1', 'Sample', False),
+                ('.//h1', 'Default suppressed'),
+                ('.//h2', 'Named Arguments'),
+                ('.//section/dl/dd/p', 'Default', False),
             ],
         ),
     ],
