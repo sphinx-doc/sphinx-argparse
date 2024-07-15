@@ -7,11 +7,11 @@ import sys
 from argparse import ArgumentParser
 
 from docutils import nodes
-from docutils.frontend import OptionParser
+from docutils.frontend import get_default_settings
 from docutils.parsers.rst import Directive, Parser
 from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
-from docutils.utils import new_document
+from sphinx.util.docutils import new_document
 from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg import __version__
@@ -71,12 +71,12 @@ def render_list(l, markdown_help, settings=None):
 
         return parse_markdown_block('\n\n'.join(l) + '\n')
     else:
+        if settings is None:
+            settings = get_default_settings(Parser)
         all_children = []
         for element in l:
             if isinstance(element, str):
-                if settings is None:
-                    settings = OptionParser(components=(Parser,)).get_default_values()
-                document = new_document(None, settings)
+                document = new_document('', settings)
                 Parser().parse(element + '\n', document)
                 all_children += document.children
             elif isinstance(element, nodes.definition):
@@ -250,7 +250,7 @@ def ensure_unique_ids(items):
     """
     s = set()
     for item in items:
-        for n in item.traverse(descend=True, siblings=True, ascend=False):
+        for n in item.findall(descend=True, siblings=True, ascend=False):
             if isinstance(n, nodes.section):
                 ids = n['ids']
                 for idx, id in enumerate(ids):
