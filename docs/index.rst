@@ -18,7 +18,6 @@ Python's argparse_ library.
    misc
    markdown
    changelog
-   contrib
 
 
 Installation
@@ -49,6 +48,29 @@ Enable the extension in your sphinx config:
 
 .. _Python Package Index: https://pypi.org/project/sphinx-argparse/
 .. _conda-forge: https:://github.com/conda-forge/sphinx-argparse-feedstock/
+
+
+Contribute
+----------
+
+Any help is welcome!
+
+Most wanted:
+
+* Additional features
+* Bug fixes
+* Examples
+
+Contributions are gratefully accepted through `GitHub pull requests`_.
+Please report any bugs as issues on GitHub.
+
+.. _GitHub pull requests: https://github.com/sphinx-doc/sphinx-argparse/
+
+Don't forget to run tests before committing:
+
+.. code:: shell
+
+   pytest
 
 
 Similar projects
