@@ -20,19 +20,25 @@
 Installation
 ------------
 
-This extension is tested on python 2.7 and 3.3+.
+This extension works with Python 3.10 or later and Sphinx 5.1 or later.
 
-The package is available in the Python Package Index::
+The package is available in the `Python Package Index`_::
 
     pip install sphinx-argparse
 
-And also in conda-forge::
+And also in `conda-forge`_::
 
     mamba -c conda-forge install sphinx-argparse
 
 Enable the extension in your sphinx config::
 
-    extensions += ['sphinxarg.ext']
+    extensions = [
+        ...,
+        'sphinxarg.ext',
+    ]
+
+.. _Python Package Index: https://pypi.org/project/sphinx-argparse/
+.. _conda-forge: https:://github.com/conda-forge/sphinx-argparse-feedstock/
 
 
 References
