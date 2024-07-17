@@ -11,6 +11,7 @@ exclude_patterns = ['_build']
 project = 'sphinx-argparse'
 copyright = '2017, Alex Rudakov, Devon Ryan, and contributors'
 release = version = '0.5.1'
+nitpicky = True
 
 # -- Options for intersphinx ---------------------------------------------------
 
