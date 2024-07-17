@@ -20,7 +20,7 @@ The short synopsis is below:
            overflow: visible !important;
        }
 
-Alternatively, you can create a :file:`docutil.conf` file with the following contents:
+Alternatively, you can create a :file:`docutils.conf` file with the following contents:
 
 .. code:: ini
 
