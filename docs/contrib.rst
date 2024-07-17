@@ -5,12 +5,17 @@ Any help is welcome!
 
 Most wanted:
 
- * Additional features
- * Bug fixes
- * Examples
+* Additional features
+* Bug fixes
+* Examples
 
-Contributions are gratefully accepted through `github <https://github.com/sphinx-doc/sphinx-argparse>`_ pull-request. Please report bugs as issues on github.
+Contributions are gratefully accepted through `GitHub pull requests`_.
+Please report any bugs as issues on GitHub.
 
-Don't forget to run tests before committing::
+.. _GitHub pull requests: https://github.com/sphinx-doc/sphinx-argparse/
 
-    py.test
+Don't forget to run tests before committing:
+
+.. code:: shell
+
+   pytest

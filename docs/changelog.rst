@@ -68,8 +68,8 @@ Change log
 0.2.3
 #####
 
-* Fixed a variety of issues, such as with `@replace` (issue #99). Thanks to @evgeni
-* You can now skip sections with `@skip`. Thanks to @evgeni
+* Fixed a variety of issues, such as with ``@replace`` (issue #99). Thanks to @evgeni
+* You can now skip sections with ``@skip``. Thanks to @evgeni
 * Fixed handling of the epilog
 
 0.2.2
@@ -80,16 +80,16 @@ Change log
 0.2.1
 #####
 
-* Stopped importing `sphinx.util.compat`, which was causing issues like that seen in `#65 <https://github.com/alex-rudakov/sphinx-argparse/issues/65>`_
+* Stopped importing ``sphinx.util.compat``, which was causing issues like that seen in `#65 <https://github.com/alex-rudakov/sphinx-argparse/issues/65>`_
 
 0.2.0
 #####
 
-* Section titles can now be used in tables of contents and linked to. The title itself is also used as the anchor. In the case of repeated names `_replicateX`, where `X` is a number, is prepended to ensure that all titles are uniquely linkable. This was bug `#46 <https://github.com/alex-rudakov/sphinx-argparse/issues/46>`_.
+* Section titles can now be used in tables of contents and linked to. The title itself is also used as the anchor. In the case of repeated names ``_replicateX``, where ``X`` is a number, is prepended to ensure that all titles are uniquely linkable. This was bug `#46 <https://github.com/alex-rudakov/sphinx-argparse/issues/46>`_.
 * The positional (aka required) and named (aka optional) option sections are now named "Positional Arguments" and "Named Arguments", for the sake of clarity (e.g., named arguments can be required). This was issue `#58 <https://github.com/alex-rudakov/sphinx-argparse/issues/58>`_.
 * Fixed quoting of default strings (issue `#59 <https://github.com/alex-rudakov/sphinx-argparse/issues/59>`_).
-* Added the `:noepilog:` and `:nodescription:` options, thanks to @arewm.
-* Added the `:nosubcommand:` option, thanks to @arewm.
+* Added the ``:noepilog:`` and ``:nodescription:`` options, thanks to @arewm.
+* Added the ``:nosubcommand:`` option, thanks to @arewm.
 
 0.1.17
 ######
@@ -99,9 +99,9 @@ Change log
 0.1.16
 ######
 
-* Added a `:nodefaultconst:` directive, which is similar to the `:nodefault:` directive, but applies only to `store_true`, `store_false`, and `store_const` (e.g., it will hide the "=True" part in the output, since that can be misleading to users).
+* Added a ``:nodefaultconst:`` directive, which is similar to the ``:nodefault:`` directive, but applies only to ``store_true``, ``store_false``, and ``store_const`` (e.g., it will hide the "=True" part in the output, since that can be misleading to users).
 * Fixed various typos (thanks to users mikeantonacci, brondsem, and tony)
-* Format specifiers (e.g., `%(prog)s` and `%(default)s`) are now filled in (if possible) in help sections. If there's a missing keyword, then nothing will be filled in. This was issue #27.
+* Format specifiers (e.g., ``%(prog)s`` and ``%(default)s``) are now filled in (if possible) in help sections. If there's a missing keyword, then nothing will be filled in. This was issue #27.
 * The package is now a bit more robust to incorrectly spelling module names (#39, courtesy of Gabriel Falcão)
 * Added support for argparse groups (thanks to Fidel Ramirez)
 
@@ -117,7 +117,7 @@ Change log
 * Support for aliasing arguments #22 (Campbell Barton)
 * Support for nested arguments #23 (Campbell Barton)
 * Support for subcommand descriptions #24 (Campbell Barton)
-* Improved parsing of content of `epilog` and `description` #25 (Louis - https://github.com/paternal)
+* Improved parsing of content of ``epilog`` and ``description`` #25 (Louis - https://github.com/paternal)
 * Added 'passparser' option (David Hoese)
 
 0.1.13

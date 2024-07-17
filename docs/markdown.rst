@@ -1,29 +1,33 @@
 Markdown
 ========
 
-As of version 0.2.0, markdown (rather than only reStructuredText) can be included inside directives as nested content. While markdown is much easier to write, please note that it is also less powerful. An example is below::
+As of version 0.2.0, markdown (rather than only reStructuredText) can be included inside directives as nested content.
+While markdown is much easier to write, please note that it is also less powerful.
+An example is below:
+
+.. code:: rst
 
    .. argparse::
-       :filename: ../test/sample.py
-       :func: parser
-       :prog: sample
-       :markdown:
+      :filename: ../test/sample.py
+      :func: parser
+      :prog: sample
+      :markdown:
 
-       Header 1
-       ========
+      Header 1
+      ========
 
-       [I'm a link to google](http://www.google.com)
+      [I'm a link to google](http://www.google.com)
 
-       ## Sub-heading
+      ## Sub-heading
 
-       ```
-       This
-        is
-         a
-         fenced
-        code
-       block
-       ```
+      ```
+      This
+       is
+        a
+        fenced
+       code
+      block
+      ```
 
 The above example renders as follows:
 
@@ -51,42 +55,51 @@ The above example renders as follows:
     block
     ```
 
-The `CommonMark-py <https://github.com/rtfd/CommonMark-py>`__ is used internally to parse Markdown. Consequently, only Markdown supported by CommonMark-py will be rendered.
+The `CommonMark-py <https://github.com/rtfd/CommonMark-py>`__ is used internally to parse Markdown.
+Consequently, only Markdown supported by CommonMark-py will be rendered.
 
-You must explicitly use the `:markdown:` flag, otherwise all content inside directives will be parsed as reStructuredText.
+You must explicitly use the ``:markdown:`` flag, otherwise all content inside directives will be parsed as reStructuredText.
 
 A note on headers
 -----------------
 
-If the Markdown you nest includes headings, then the first one **MUST** be level 1. Subsequent headings can be at `lower levels <http://daringfireball.net/projects/markdown/syntax#header>`__ and then rendered correctly.
+If the Markdown you nest includes headings, then the first one **MUST** be level 1.
+Subsequent headings can be at `lower levels <http://daringfireball.net/projects/markdown/syntax#header>`__ and then rendered correctly.
 
 Hard line breaks
 ----------------
 
-Sphinx strips white-space from the end of lines prior to handing it to this package. Because of that, hard line breaks can not currently be rendered.
+Sphinx strips white-space from the end of lines prior to handing it to this package.
+Because of that, hard line breaks can not currently be rendered.
 
 Replacing/appending/prepending content
 --------------------------------------
 
-When markdown is used as nested content, it's not possible to create dictionary entries like in reStructuredText to `modify program option descriptions <extend.html>`__. This is because CommonMark-py does not support dictionary entries.
+When markdown is used as nested content, it's not possible to create dictionary entries like in reStructuredText to `modify program option descriptions <extend.html>`__.
+This is because CommonMark-py does not support dictionary entries.
 
 MarkDown in program descriptions and option help
 ------------------------------------------------
 
-In addition to using MarkDown in nested content, one can also use MarkDown directly in program descriptions and option help messages. For example::
+In addition to using MarkDown in nested content, one can also use MarkDown directly in program descriptions and option help messages.
+For example:
 
-    import argparse
+.. code:: python
 
-    def blah():
-        parser = argparse.ArgumentParser(description="""
-    ### Example of MarkDown inside programs
+   import argparse
 
-    [I'm a link](http://www.google.com)
-    """)
-        parser.add_argument('cmd', help='execute a `command`')
-        return parser
+   def blah():
+       parser = argparse.ArgumentParser(description="""
+   ### Example of MarkDown inside programs
 
-To render this as MarkDown rather than reStructuredText, use the `markdownhelp` option::
+   [I'm a link](http://www.google.com)
+   """)
+       parser.add_argument('cmd', help='execute a `command`')
+       return parser
+
+To render this as MarkDown rather than reStructuredText, use the ``:markdownhelp:`` option:
+
+.. code:: rst
 
     .. argparse::
         :filename: ../test/sample2.py

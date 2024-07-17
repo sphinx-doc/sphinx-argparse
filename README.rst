@@ -22,14 +22,18 @@
    :target: https://opensource.org/licenses/MIT
    :alt: MIT
 
-A sphinx extension that automatically documents argparse commands and options.
+A Sphinx extension to automatically document argparse_ commands and options.
 
 For installation and usage details see the documentation_.
 The changelog is also `found there`_.
 
-This project used to live at `alex-rudakov/sphinx-argparse`_,
-and has been revived and moved to this new home.
-
+.. _argparse: https://docs.python.org/3/library/argparse.html
 .. _documentation: https://sphinx-argparse.readthedocs.org/
 .. _found there: https://sphinx-argparse.readthedocs.org/en/latest/changelog.html
-.. _alex-rudakov/sphinx-argparse: https://github.com/alex-rudakov/sphinx-argparse/
+
+.. note::
+   This project used to live at `alex-rudakov/sphinx-argparse`_,
+   and has been revived and moved to this `new home`_.
+
+   .. _alex-rudakov/sphinx-argparse: https://github.com/alex-rudakov/sphinx-argparse/
+   .. _new home: https://github.com/sphinx-doc/sphinx-argparse/
