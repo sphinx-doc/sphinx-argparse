@@ -8,11 +8,11 @@ from argparse import ArgumentParser
 
 from docutils import nodes
 from docutils.frontend import get_default_settings
-from docutils.parsers.rst import Directive, Parser
+from docutils.parsers.rst import Parser
 from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
 from sphinx.ext.autodoc import mock
-from sphinx.util.docutils import new_document
+from sphinx.util.docutils import SphinxDirective, new_document
 from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg import __version__
@@ -279,7 +279,7 @@ def ensure_unique_ids(items):
                 n['ids'] = ids
 
 
-class ArgParseDirective(Directive):
+class ArgParseDirective(SphinxDirective):
     has_content = True
     option_spec = {
         'module': unchanged,
