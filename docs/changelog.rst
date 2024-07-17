@@ -2,6 +2,9 @@
 Change log
 **********
 
+0.5.2
+#####
+
 * Fix formatting of empty-string default values.
   Patch by Adam Turner.
 
