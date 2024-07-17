@@ -113,7 +113,9 @@ def print_action_groups(
             # Every action group is composed of a section, holding
             # a title, the description, and the option group (members)
             title_as_id = action_group['title'].replace(' ', '-').lower()
-            section = nodes.section(ids=[f'{id_prefix}-{title_as_id}'])
+            if id_prefix:
+                title_as_id = f'{id_prefix}-{title_as_id}'
+            section = nodes.section(ids=[title_as_id])
             section += nodes.title(action_group['title'], action_group['title'])
 
             desc = []
@@ -575,7 +577,7 @@ class ArgParseDirective(SphinxDirective):
                 nested_content,
                 markdown_help,
                 settings=self.state.document.settings,
-                id_prefix=(f'{module_name}-' if module_name else '') + attr_name,
+                id_prefix=f'{module_name}-{attr_name}' if module_name else attr_name,
             )
         )
         if 'nosubcommands' not in self.options:
