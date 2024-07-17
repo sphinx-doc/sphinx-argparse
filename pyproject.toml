@@ -36,7 +36,8 @@ classifiers = [
     "Topic :: Documentation :: Sphinx",
 ]
 dependencies = [
-    "sphinx>=4.0.0",
+    "sphinx>=5.1.0",
+    "docutils>=0.19",  # for get_default_settings()
 ]
 dynamic = ["version"]
 
