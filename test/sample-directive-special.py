@@ -24,5 +24,10 @@ def get_parser():
         default=['*.rst', '_txt_', '**strong**', '*italic*', '``code``'],
         nargs='+',
     )
+    parser.add_argument(
+        '--some-text-empty-default',
+        help='Scalar text input',
+        default='',
+    )
 
     return parser

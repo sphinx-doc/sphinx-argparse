@@ -119,9 +119,10 @@ def parse_parser(parser, data=None, **kwargs):
             # Quote default values for string/None types
             default = action.default
             if (
-                action.default not in ['', None, True, False]
-                and action.type in [None, str]
-                and isinstance(action.default, str)
+                default is not None
+                and not isinstance(default, bool)
+                and action.type in {None, str}
+                and isinstance(default, str)
             ):
                 default = f"'{default}'"
 

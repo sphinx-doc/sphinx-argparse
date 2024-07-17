@@ -87,7 +87,7 @@ def render_list(l, markdown_help, settings=None):
         return all_children
 
 
-def _is_suppressed(item):
+def _is_suppressed(item: str | None) -> bool:
     """Return whether item should not be printed."""
     if item is None:
         return True
