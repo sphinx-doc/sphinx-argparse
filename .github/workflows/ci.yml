@@ -51,7 +51,6 @@ jobs:
         run: >
           python -m pytest
           -vv
-          --dead-fixtures --dup-fixtures
           --cov . --cov-append --cov-config pyproject.toml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

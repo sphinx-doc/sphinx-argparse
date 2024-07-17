@@ -54,7 +54,6 @@ lint = [
 ]
 test = [
     "pytest>=8.0",
-    "pytest-deadfixtures>=2.2",
     "coverage>=6.5",
     "lxml>=4.9",
     "setuptools>=70.0",  # for Cython compilation
