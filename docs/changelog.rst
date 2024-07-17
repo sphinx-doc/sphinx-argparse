@@ -2,6 +2,16 @@
 Change log
 **********
 
+0.5.1
+#####
+
+* Fix ``autodoc_mock_imports`` support.
+  Patch by Adam Turner.
+* Properly declare supported Sphinx and Docutils versions.
+  Patch by Adam Turner.
+* Fix tests and ensure tests run in CI.
+  Patch by Adam Turner.
+
 0.5.0
 #####
 
