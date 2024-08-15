@@ -74,8 +74,8 @@ def check_xpath(etree, fname, path, check, be_found=True):
                 ('.//h1', 'Command A'),
                 (".//div[@class='highlight']//span", 'usage'),
                 ('.//h2', 'Positional Arguments'),
-                (".//section[@id='get_parser-positional-arguments']", ''),
-                (".//section[@id='get_parser-positional-arguments']/dl/dt[1]/kbd", 'baz'),
+                (".//section[@id='get_parser-A-positional-arguments']", ''),
+                (".//section[@id='get_parser-A-positional-arguments']/dl/dt[1]/kbd", 'baz'),
             ],
         ),
         (
