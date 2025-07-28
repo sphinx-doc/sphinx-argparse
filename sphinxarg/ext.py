@@ -222,6 +222,9 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
             else:
                 desc = ['Undocumented']
 
+            if desc[0] == '==SUPPRESS==':
+                continue
+
             # Handle nested content
             subcontent = []
             if child['name'] in definitions:
