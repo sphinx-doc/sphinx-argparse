@@ -468,6 +468,10 @@ class ArgParseDirective(SphinxDirective):
         return content
 
     def _open_filename(self):
+        try:
+            return open(os.path.join(self.env.srcdir, self.options['filename']))
+        except OSError:
+            pass
         # try open with given path
         try:
             return open(self.options['filename'])
