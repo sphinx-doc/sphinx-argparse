@@ -32,3 +32,11 @@ Linking to action groups
 ------------------------
 
 As of version 0.2.0, action groups (e.g., "Optional arguments", "Required arguments", and subcommands) can be included in tables of contents and external links. The anchor name is the same as the title name (e.g., "Optional arguments"). In cases where titles are duplicated, as is often the case when subcommands are used, ``_repeatX``, where ``X`` is a number, is prepended to duplicate anchor names to ensure that they can all be uniquely linked.
+
+
+Argparse color
+--------------
+
+Since Python 3.14, ``argparse`` uses `colors <https://docs.python.org/3/library/argparse.html#color>`__ in the output by default.
+These ANSI color sequences won't show right at all in the Sphinx output, so this extension will disable colors first in your ``ArgumentParser`` instance before producing the output.
+You can override this default behaviour by passing the ``:color:`` flag to your ``.. argparse`` directive, in this case the color setting of the argument parser is enabled.
