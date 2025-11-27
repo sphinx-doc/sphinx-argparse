@@ -102,7 +102,7 @@ The next sections will describe the options in more detail.
 About Sub-Commands
 ==================
 
-Sub-commands are limited to one level. But, you can always output help for subcommands separately::
+Sub-commands are limited to one level. But, you can always output help for subcommands separately:
 
 .. code:: rst
 
