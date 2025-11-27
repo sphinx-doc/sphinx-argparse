@@ -524,9 +524,7 @@ class ArgParseDirective(SphinxDirective):
 
         definitions = map_nested_definitions(nested_content)
         items = []
-        full_subcommand_name_true = (
-                ('full_subcommand_name', True) in self.config.sphinx_argparse_conf.items()
-        )
+        full_subcommand_name_true = self.config.sphinxarg_full_subcommand_name
         domain = cast(ArgParseDomain, self.env.domains[ArgParseDomain.name])
 
         if 'children' in data:
@@ -859,6 +857,7 @@ class CommandsIndex(Index):
 
 
 class CommandsByGroupIndex(Index):
+    # Defaults (can be overridden through `conf.py`):
     name = 'by-group'
     localname = 'Commands by Group'
 
@@ -977,28 +976,27 @@ def _create_temporary_dummy_file(
 
 
 def configure_ext(app: Sphinx) -> None:
-    conf = app.config.sphinx_argparse_conf
     domain = cast(ArgParseDomain, app.env.domains[ArgParseDomain.name])
     build_index = False
     build_by_group_index = False
-    if 'commands_by_group_index_file_suffix' in conf:
-        build_by_group_index = True
-        CommandsByGroupIndex.name = conf.get('commands_by_group_index_file_suffix')
-    if 'commands_by_group_index_title' in conf:
-        build_by_group_index = True
-        CommandsByGroupIndex.localname = conf.get('commands_by_group_index_title')
-    if ('commands_index_in_toctree', True) in conf.items():
+
+    CommandsByGroupIndex.name = app.config.sphinxarg_commands_by_group_index_file_suffix
+    CommandsByGroupIndex.localname = app.config.sphinxarg_commands_by_group_index_title
+
+    if app.config.sphinxarg_commands_index_in_toctree:
         build_index = True
         docname = f'{ArgParseDomain.name}-{CommandsIndex.name}.rst'
         _create_temporary_dummy_file(app, domain, docname, CommandsIndex.localname)
-    if ('commands_by_group_index_in_toctree', True) in conf.items():
+
+    if app.config.sphinxarg_commands_by_group_index_in_toctree:
         build_by_group_index = True
         docname = f'{ArgParseDomain.name}-{CommandsByGroupIndex.name}.rst'
         _create_temporary_dummy_file(app, domain, docname, CommandsByGroupIndex.localname)
 
-    if build_index or ('build_commands_index', True) in conf.items():
+    if build_index or app.config.sphinxarg_build_commands_index:
         domain.indices.append(CommandsIndex)
-    if build_by_group_index or ('build_commands_by_group_index', True) in conf.items():
+
+    if build_by_group_index or app.config.sphinxarg_build_commands_by_group_index:
         domain.indices.append(CommandsByGroupIndex)
 
     # Call setup so that :ref:`commands-...` are link targets.
@@ -1009,7 +1007,18 @@ def setup(app: Sphinx):
     app.setup_extension('sphinx.ext.autodoc')
     app.add_domain(ArgParseDomain)
     app.add_directive('argparse', ArgParseDirective)
-    app.add_config_value('sphinx_argparse_conf', {}, 'html', types={dict})
+
+    # Config options must be mentioned in ``usage.rst`` too!
+
+    app.add_config_value('sphinxarg_full_subcommand_name', False, 'html', bool)
+    app.add_config_value('sphinxarg_build_commands_index', False, 'html', bool)
+    app.add_config_value('sphinxarg_commands_index_in_toctree', False, 'html', bool)
+
+    app.add_config_value('sphinxarg_build_commands_by_group_index', False, 'html', bool)
+    app.add_config_value('sphinxarg_commands_by_group_index_in_toctree', False, 'html', bool)
+    app.add_config_value('sphinxarg_commands_by_group_index_file_suffix', CommandsByGroupIndex.name, 'html', str)
+    app.add_config_value('sphinxarg_commands_by_group_index_title', CommandsByGroupIndex.localname, 'html', str)
+
     app.connect('builder-inited', configure_ext)
     app.connect('build-finished', _delete_temporary_files)
     return {

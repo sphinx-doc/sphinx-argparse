@@ -76,7 +76,28 @@ working dir.
 
 That's it. Directives will render positional arguments, options and sub-commands.
 
+
+Config
+======
+
+The following ``conf.py`` config options are available, with their default values.
+The next sections will describe the options in more detail.
+
+.. code:: py
+
+   sphinxarg_full_subcommand_name = False
+
+   sphinxarg_build_commands_index = False
+   sphinxarg_commands_index_in_toctree = False
+
+   sphinxarg_build_commands_by_group_index = False
+   sphinxarg_commands_by_group_index_in_toctree = False
+   sphinxarg_commands_by_group_index_file_suffix = "by-group"
+   sphinxarg_commands_by_group_index_title = "Commands by Group"
+
+
 .. _about-subcommands:
+
 
 About Sub-Commands
 ==================
@@ -134,9 +155,7 @@ the option in the ``conf.py`` for your project:
 
 .. code-block:: python
 
-   sphinx_argparse_conf = {
-     "full_subcommand_name": True,
-   }
+   sphinxarg_full_subcommand_name = True
 
 
 Indices
@@ -154,10 +173,8 @@ To enable the simple command index, add the following to the project ``conf.py``
 
 .. code-block:: python
 
-    sphinx_argparse_conf = {
-      "build_commands_index": True,
-      "commands_index_in_toctree": True,
-    }
+    sphinxarg_build_commands_index = True
+    sphinxarg_commands_index_in_toctree = True
 
 The first option, ``build_commands_index``, instructs the extension to create the index.
 For an HTML build, the index is created with the file name ``commands-index.html`` in the output directory.
@@ -176,10 +193,8 @@ To enable the more complex index, add the following to the project ``conf.py`` f
 
 .. code-block:: python
 
-    sphinx_argparse_conf = {
-      "build_commands_by_group_index": True,
-      "commands_by_group_index_in_toctree": True,
-    }
+    sphinxarg_build_commands_by_group_index = True
+    sphinxarg_commands_by_group_index_in_toctree = True
 
 Add the ``:index-groups:`` option to the ``argparse`` directive in your documentation files.
 Specify one or more groups that the command belongs to (comma-separated).
@@ -195,24 +210,23 @@ Specify one or more groups that the command belongs to (comma-separated).
 For an HTML build, the index is created with the file name ``commands-by-group.html`` in the output directory.
 You can cross reference the index from other files with the ``:ref:`commands-by-group``` role.
 
-Like the simple index, the ``commands_by_group_index_in_toctree`` option enables you to reference the index in ``toctree`` directives.
+Like the simple index, the ``sphinxarg_commands_by_group_index_in_toctree`` option enables you to reference the index in ``toctree`` directives.
 
 This index has two more options.
 
 .. code-block:: python
 
-    sphinx_argparse_conf = {
-      "commands_by_group_index_in_toctree": True,
-      "commands_by_group_index_file_suffix": "by-service",
-      "commands_by_group_index_title": "Commands by Service",
-    }
+    sphinxarg_commands_by_group_index_in_toctree = True
+    sphinxarg_commands_by_group_index_file_suffix = "by-service"
+    sphinxarg_commands_by_group_index_title = "Commands by Service"
 
-The ``commands_by_group_index_file_suffix`` option overrides the default index name of ``commands-by-group.html``.
+
+The ``sphinxarg_commands_by_group_index_file_suffix`` option overrides the default index name of ``commands-by-group.html``.
 The value ``commands-`` is concatenated with the value you specify.
 In the preceding sample, the index file name is created as ``commands-by-service.html``.
 If you specify this option, the default reference of ``:ref:`commands-by-group``` is overridden with the value that you create.
 
-The ``commands_by_group_index_title`` option overides the default first-level heading for the file.
+The ``sphinxarg_commands_by_group_index_title`` option overrides the default first-level heading for the file.
 The default heading is "Commands by Group".
 The value you specify replaces the default value.
 
