@@ -18,7 +18,6 @@ from test.utils.xpath import check_xpath
                 ('.//h1', 'blah-blah', False),
                 (".//div[@class='highlight']//span", 'usage'),
                 ('.//h2', 'Positional Arguments'),
-
                 (".//section[@id='sample-directive-opts-positional-arguments']", ''),
                 (".//section/span[@id='get_parser-positional-arguments']", ''),
                 (
@@ -27,7 +26,10 @@ from test.utils.xpath import check_xpath
                 ),
                 (".//section[@id='sample-directive-opts-named-arguments']", ''),
                 (".//section/span[@id='get_parser-named-arguments']", ''),
-                (".//section[@id='sample-directive-opts-named-arguments']/dl/dt[1]/kbd", '--foo'),
+                (
+                    ".//section[@id='sample-directive-opts-named-arguments']/dl/dt[1]/kbd",
+                    '--foo',
+                ),
                 (".//section[@id='sample-directive-opts-bar-options']", ''),
                 (".//section/span[@id='get_parser-bar-options']", ''),
                 (".//section[@id='sample-directive-opts-bar-options']/dl/dt[1]/kbd", '--bar'),
@@ -42,7 +44,10 @@ from test.utils.xpath import check_xpath
                 ('.//h2', 'Positional Arguments'),
                 (".//section[@id='sample-directive-opts-A-positional-arguments']", ''),
                 (".//section/span[@id='get_parser-positional-arguments']", ''),
-                (".//section[@id='sample-directive-opts-A-positional-arguments']/dl/dt[1]/kbd", 'baz'),
+                (
+                    ".//section[@id='sample-directive-opts-A-positional-arguments']/dl/dt[1]/kbd",
+                    'baz',
+                ),
             ],
         ),
         (

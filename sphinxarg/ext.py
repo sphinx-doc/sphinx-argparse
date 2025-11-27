@@ -13,8 +13,6 @@ from docutils.frontend import get_default_settings
 from docutils.parsers.rst import Parser
 from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
-from sphinx.ext.autodoc import mock
-from sphinx.util.docutils import SphinxDirective, new_document
 from sphinx.domains import Domain, Index, IndexEntry
 from sphinx.errors import ExtensionError
 from sphinx.ext.autodoc import mock
@@ -895,8 +893,10 @@ class ArgParseDomain(Domain):
     # option is set to True.
     temporary_index_files: list[Path] = []
 
-    def get_full_qualified_name(self, node: Element) -> str:
-        return str(node.arguments[0])
+    def get_full_qualified_name(self, node: Element) -> str | None:
+        # The use of this method is not clear - the content is made to
+        # resemble :meth:`PythonDomain.get_full_qualified_name` instead
+        return node.get('reftarget', None)
 
     def get_objects(self) -> Iterable[_ObjectDescriptionTuple]:
         yield from self.data['commands']
@@ -910,7 +910,7 @@ class ArgParseDomain(Domain):
         target: str,
         node: pending_xref,
         contnode: Element,
-    ) -> Element | None:
+    ) -> nodes.reference | None:
         anchor_id = target_to_anchor_id(target)
         match = [
             (docname, anchor)
@@ -1016,8 +1016,12 @@ def setup(app: Sphinx):
 
     app.add_config_value('sphinxarg_build_commands_by_group_index', False, 'html', bool)
     app.add_config_value('sphinxarg_commands_by_group_index_in_toctree', False, 'html', bool)
-    app.add_config_value('sphinxarg_commands_by_group_index_file_suffix', CommandsByGroupIndex.name, 'html', str)
-    app.add_config_value('sphinxarg_commands_by_group_index_title', CommandsByGroupIndex.localname, 'html', str)
+    app.add_config_value(
+        'sphinxarg_commands_by_group_index_file_suffix', CommandsByGroupIndex.name, 'html', str
+    )
+    app.add_config_value(
+        'sphinxarg_commands_by_group_index_title', CommandsByGroupIndex.localname, 'html', str
+    )
 
     app.connect('builder-inited', configure_ext)
     app.connect('build-finished', _delete_temporary_files)
