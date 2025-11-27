@@ -18,9 +18,7 @@ from test.utils.xpath import check_xpath
     'html',
     testroot='conf-opts-html',
     confoverrides={
-        'sphinx_argparse_conf': {
-            'full_subcommand_name': True,
-        }
+        'sphinxarg_full_subcommand_name': True,
     },
 )
 def test_full_subcomand_name_html(app, cached_etree_parse, fname, expect):

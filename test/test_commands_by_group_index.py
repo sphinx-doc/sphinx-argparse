@@ -94,11 +94,9 @@ def test_commands_by_group_index_html(app, cached_etree_parse, fname, expect):
     'html',
     testroot='command-by-group-index',
     confoverrides={
-        'sphinx_argparse_conf': {
-            'commands_by_group_index_title': 'Commands grouped by SomeName',
-            'commands_by_group_index_file_suffix': 'groupedby-somename',
-            'commands_by_group_index_in_toctree': True,
-        }
+        'sphinxarg_commands_by_group_index_in_toctree': True,
+        'sphinxarg_commands_by_group_index_title': 'Commands grouped by SomeName',
+        'sphinxarg_commands_by_group_index_file_suffix': 'groupedby-somename',
     },
 )
 def test_by_group_index_overrides_html(app, cached_etree_parse, fname, expect):
