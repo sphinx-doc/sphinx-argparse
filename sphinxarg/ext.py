@@ -158,7 +158,7 @@ def print_action_groups(
                 arg = []
                 if 'choices' in entry:
                     arg.append(
-                        f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n"
+                        f'Possible choices: {", ".join(str(c) for c in entry["choices"])}\n'
                     )
                 if 'help' in entry:
                     arg.append(entry['help'])
