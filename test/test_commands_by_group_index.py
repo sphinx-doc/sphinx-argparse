@@ -12,20 +12,20 @@ from test.utils.xpath import check_xpath
     [
         (
             'index.html',
-            (".//div[@role='navigation']//a[@class='reference internal']", 'Sample'),
+            (".//div[@class='document']//a[@class='reference internal']", 'Sample'),
         ),
         (
             'index.html',
-            (".//div[@role='navigation']//a[@class='reference internal']", 'Command A'),
+            (".//div[@class='document']//a[@class='reference internal']", 'Command A'),
         ),
         (
             'index.html',
-            (".//div[@role='navigation']//a[@class='reference internal']", 'Command B'),
+            (".//div[@class='document']//a[@class='reference internal']", 'Command B'),
         ),
         (
             'index.html',
             (
-                ".//div[@role='navigation']//a[@class='reference internal']",
+                ".//div[@class='document']//a[@class='reference internal']",
                 'Commands by Group',
             ),
         ),
@@ -82,7 +82,7 @@ def test_commands_by_group_index_html(app, cached_etree_parse, fname, expect):
         (
             'index.html',
             (
-                ".//div[@role='navigation']//a[@class='reference internal']",
+                ".//div[@class='document']//a[@class='reference internal']",
                 'Commands grouped by SomeName',
             ),
         ),
