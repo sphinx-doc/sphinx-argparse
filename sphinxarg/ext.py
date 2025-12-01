@@ -113,6 +113,8 @@ def print_action_groups(
             # Every action group is composed of a section, holding
             # a title, the description, and the option group (members)
             title_as_id = action_group['title'].replace(' ', '-').lower()
+            if data['name']:
+                title_as_id = f'{data["name"]}-{title_as_id}'
             if id_prefix:
                 title_as_id = f'{id_prefix}-{title_as_id}'
             section = nodes.section(ids=[title_as_id])
