@@ -540,15 +540,11 @@ class ArgParseDirective(SphinxDirective):
         if 'prog' in self.options:
             parser.prog = self.options['prog']
 
-        # Argparse in Python 3.14 uses ANSI color codes by default (#72)
-        if hasattr(parser, 'color'):
-            parser.color = 'color' in self.options
-            # Disable colors, unless a flag is present in the user-settings
-
         result = parse_parser(
             parser,
             skip_default_values='nodefault' in self.options,
             skip_default_const_values='nodefaultconst' in self.options,
+            color='color' in self.options,
         )
         result = parser_navigate(result, path)
         if 'manpage' in self.options:
