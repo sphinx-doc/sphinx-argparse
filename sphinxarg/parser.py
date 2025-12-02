@@ -55,6 +55,18 @@ def _format_usage_without_prefix(parser):
 
 
 def parse_parser(parser, data=None, **kwargs):
+    """Take data from argparse argument parser.
+
+    Keyword arguments:
+        - skip_default_values
+        - skip_default_const_values
+        - color
+    """
+    # Argparse in Python 3.14 uses ANSI color codes by default (#72)
+    if hasattr(parser, 'color'):
+        parser.color = kwargs.get('color', False)
+        # Disable colors, unless a flag is presented through user-settings
+
     if data is None:
         data = {
             'name': '',
@@ -85,6 +97,11 @@ def parse_parser(parser, data=None, **kwargs):
         for name, subaction in action._name_parser_map.items():
             if name in subsection_alias_names:
                 continue
+
+            if hasattr(subaction, 'color'):
+                subaction.color = parser.color
+                # Color is not inherited, must be set again
+
             subalias = subsection_alias[subaction]
             subaction.prog = f'{parser.prog} {name}'
             subdata = {
