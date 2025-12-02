@@ -99,20 +99,23 @@ def test_object_inventory(app, cached_etree_parse):
     with inventory_file.open('rb') as f:
         inv = InventoryFile.load(f, 'test/path', posixpath.join)
 
-    assert 'sample-directive-opts' in inv.get('commands:command')
+    directive_opts = inv.get('commands:command').get('sample-directive-opts', None)
+    assert directive_opts is not None
     assert (
         'test/path/index.html#sample-directive-opts'
-        == inv['commands:command']['sample-directive-opts'][2]
+        == directive_opts.uri
     )
 
-    assert 'sample-directive-opts A' in inv.get('commands:command')
+    directive_opts_a = inv.get('commands:command').get('sample-directive-opts A', None)
+    assert directive_opts_a is not None
     assert (
         'test/path/subcommand-a.html#sample-directive-opts-A'
-        == inv['commands:command']['sample-directive-opts A'][2]
+        == directive_opts_a.uri
     )
 
-    assert 'sample-directive-opts B' in inv.get('commands:command')
+    directive_opts_b = inv.get('commands:command').get('sample-directive-opts B', None)
+    assert directive_opts_b is not None
     assert (
         'test/path/index.html#sample-directive-opts-B'
-        == inv['commands:command']['sample-directive-opts B'][2]
+        == directive_opts_b.uri
     )
