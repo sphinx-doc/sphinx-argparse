@@ -893,11 +893,6 @@ class ArgParseDomain(Domain):
     # option is set to True.
     temporary_index_files: list[Path] = []
 
-    def get_full_qualified_name(self, node: Element) -> str | None:
-        # The use of this method is not clear - the content is made to
-        # resemble :meth:`PythonDomain.get_full_qualified_name` instead
-        return node.get('reftarget', None)
-
     def get_objects(self) -> Iterable[_ObjectDescriptionTuple]:
         yield from self.data['commands']
 
