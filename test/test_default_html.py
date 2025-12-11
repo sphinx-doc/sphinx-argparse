@@ -101,21 +101,12 @@ def test_object_inventory(app, cached_etree_parse):
 
     directive_opts = inv.get('commands:command').get('sample-directive-opts', None)
     assert directive_opts is not None
-    assert (
-        'test/path/index.html#sample-directive-opts'
-        == directive_opts.uri
-    )
+    assert 'test/path/index.html#sample-directive-opts' == directive_opts.uri
 
     directive_opts_a = inv.get('commands:command').get('sample-directive-opts A', None)
     assert directive_opts_a is not None
-    assert (
-        'test/path/subcommand-a.html#sample-directive-opts-A'
-        == directive_opts_a.uri
-    )
+    assert 'test/path/subcommand-a.html#sample-directive-opts-A' == directive_opts_a.uri
 
     directive_opts_b = inv.get('commands:command').get('sample-directive-opts B', None)
     assert directive_opts_b is not None
-    assert (
-        'test/path/index.html#sample-directive-opts-B'
-        == directive_opts_b.uri
-    )
+    assert 'test/path/index.html#sample-directive-opts-B' == directive_opts_b.uri

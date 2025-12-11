@@ -18,7 +18,7 @@ def parser_navigate(parser_result, path, current_path=None):
     if len(path) == 0:
         return parser_result
     if 'children' not in parser_result:
-        msg = f"Current parser has no child elements.  (path: {' '.join(current_path)})"
+        msg = f'Current parser has no child elements.  (path: {" ".join(current_path)})'
         raise NavigationException(msg)
     next_hop = path.pop(0)
     for child in parser_result['children']:
@@ -28,8 +28,8 @@ def parser_navigate(parser_result, path, current_path=None):
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
     msg = (
-        f"Current parser has no child element with name: {next_hop} "
-        f"(path: {' '.join(current_path)})"
+        f'Current parser has no child element with name: {next_hop} '
+        f'(path: {" ".join(current_path)})'
     )
     raise NavigationException(msg)
 
@@ -88,7 +88,7 @@ def parse_parser(parser, data=None, **kwargs):
             subalias = subsection_alias[subaction]
             subaction.prog = f'{parser.prog} {name}'
             subdata = {
-                'name': name if not subalias else f"{name} ({', '.join(subalias)})",
+                'name': name if not subalias else f'{name} ({", ".join(subalias)})',
                 'help': helps.get(name, ''),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),

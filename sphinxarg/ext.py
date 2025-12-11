@@ -6,7 +6,7 @@ import os
 import shutil
 import sys
 from argparse import ArgumentParser
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, ClassVar, cast
 
 from docutils import nodes
 from docutils.frontend import get_default_settings
@@ -179,7 +179,7 @@ def print_action_groups(
                 arg = []
                 if 'choices' in entry:
                     arg.append(
-                        f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n"
+                        f'Possible choices: {", ".join(str(c) for c in entry["choices"])}\n'
                     )
                 if 'help' in entry:
                     arg.append(entry['help'])
@@ -524,7 +524,7 @@ class ArgParseDirective(SphinxDirective):
         definitions = map_nested_definitions(nested_content)
         items = []
         full_subcommand_name_true = self.config.sphinxarg_full_subcommand_name
-        domain = cast(ArgParseDomain, self.env.domains[ArgParseDomain.name])
+        domain = cast('ArgParseDomain', self.env.domains[ArgParseDomain.name])
 
         if 'children' in data:
             full_command = command_pos_args(data)
@@ -667,7 +667,7 @@ class ArgParseDirective(SphinxDirective):
                     arg = []
                     if 'choices' in entry:
                         arg.append(
-                            f"Possible choices: {', '.join(map(str, entry['choices']))}\n"
+                            f'Possible choices: {", ".join(map(str, entry["choices"]))}\n'
                         )
                     if 'help' in entry:
                         arg.append(entry['help'])
@@ -814,7 +814,7 @@ class ArgParseDirective(SphinxDirective):
         self.set_source_info(target)
         self.state.document.note_explicit_target(target)
 
-        domain = cast(ArgParseDomain, self.env.get_domain(ArgParseDomain.name))
+        domain = cast('ArgParseDomain', self.env.get_domain(ArgParseDomain.name))
         domain.add_argparse_command(result, node_id, self.index_groups)
 
         items.append(nodes.literal_block(text=result['usage']))
@@ -888,8 +888,8 @@ class ArgParseDomain(Domain):
         'command': XRefRole(),
     }
     indices = []
-    initial_data: dict[
-        str, list[_ObjectDescriptionTuple] | dict[str, list[_ObjectDescriptionTuple]]
+    initial_data: ClassVar[
+        dict[str, list[_ObjectDescriptionTuple] | dict[str, list[_ObjectDescriptionTuple]]]
     ] = {
         'commands': [],
         'commands-by-group': {},
@@ -948,7 +948,7 @@ class ArgParseDomain(Domain):
 
 def _delete_temporary_files(app: Sphinx, _err) -> None:
     assert app.env is not None
-    domain = cast(ArgParseDomain, app.env.domains[ArgParseDomain.name])
+    domain = cast('ArgParseDomain', app.env.domains[ArgParseDomain.name])
     for fpath in domain.temporary_index_files:
         fpath.unlink(missing_ok=True)
 
@@ -973,12 +973,12 @@ def _create_temporary_dummy_file(
         f'Creating this temporary file enables you to add {docname} to the toctree.',
     ))
     dummy_file.write_text(content, encoding='utf-8')
-    domain = cast(ArgParseDomain, domain)
+    domain = cast('ArgParseDomain', domain)
     domain.temporary_index_files.append(dummy_file)
 
 
 def configure_ext(app: Sphinx) -> None:
-    domain = cast(ArgParseDomain, app.env.domains[ArgParseDomain.name])
+    domain = cast('ArgParseDomain', app.env.domains[ArgParseDomain.name])
     build_index = False
     build_by_group_index = False
 

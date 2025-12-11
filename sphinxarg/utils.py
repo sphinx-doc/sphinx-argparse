@@ -23,9 +23,9 @@ def command_pos_args(result: dict) -> str:
     ret = ''
 
     if 'name' in result and result['name'] != '':
-        ret += f"{result['name']}"
+        ret += f'{result["name"]}'
     elif 'prog' in result and result['prog'] != '':
-        ret += f"{result['prog']}"
+        ret += f'{result["prog"]}'
 
     if 'parent' in result:
         ret = command_pos_args(result['parent']) + ' ' + ret
