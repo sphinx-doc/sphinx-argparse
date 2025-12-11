@@ -321,6 +321,7 @@ class ArgParseDirective(SphinxDirective):
         'nodescription': unchanged,
         'markdown': flag,
         'markdownhelp': flag,
+        'color': flag,
         'index-groups': unchanged,
     }
     index_groups: Sequence[str] = ()
@@ -762,6 +763,12 @@ class ArgParseDirective(SphinxDirective):
         path = str(self.options['path'])
         if 'prog' in self.options:
             parser.prog = self.options['prog']
+
+        # Argparse in Python 3.14 uses ANSI color codes by default (#72)
+        if hasattr(parser, 'color'):
+            parser.color = 'color' in self.options
+            # Disable colors, unless a flag is present in the user-settings
+
         result = parse_parser(
             parser,
             skip_default_values='nodefault' in self.options,
