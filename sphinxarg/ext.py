@@ -87,6 +87,12 @@ def render_list(l, markdown_help, settings=None):
         return all_children
 
 
+def format_choices(choices):
+    if isinstance(choices, range) and choices.step == 1:
+        return f'Value range: {choices.start} to {choices.stop}\n'
+    return f'Possible choices: {", ".join(str(c) for c in choices)}\n'
+
+
 def _is_suppressed(item: str | None) -> bool:
     """Return whether item should not be printed."""
     if item is None:
@@ -157,9 +163,7 @@ def print_action_groups(
                 # Build the help text
                 arg = []
                 if 'choices' in entry:
-                    arg.append(
-                        f"Possible choices: {', '.join(str(c) for c in entry['choices'])}\n"
-                    )
+                    arg.append(format_choices(entry['choices']))
                 if 'help' in entry:
                     arg.append(entry['help'])
                 if not _is_suppressed(entry['default']):
@@ -401,9 +405,7 @@ class ArgParseDirective(SphinxDirective):
             elif 'choices' not in arg:
                 arg_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
-                arg_items.append(
-                    nodes.paragraph(text='Possible choices: ' + ', '.join(arg['choices']))
-                )
+                arg_items.append(nodes.paragraph(text=format_choices(arg['choices'])))
             items.append(
                 nodes.option_list_item(
                     '',
@@ -433,9 +435,7 @@ class ArgParseDirective(SphinxDirective):
             elif 'choices' not in opt:
                 opt_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
-                opt_items.append(
-                    nodes.paragraph(text='Possible choices: ' + ', '.join(opt['choices']))
-                )
+                opt_items.append(nodes.paragraph(text=format_choices(opt['choices'])))
             items.append(
                 nodes.option_list_item(
                     '',
