@@ -1,13 +1,9 @@
 Sample
-######
+======
 
 .. argparse::
    :filename: test/sample-directive-opts.py
    :prog: sample-directive-opts
    :func: get_parser
-
-
-Link check
-**********
-
-Add a link to :commands:command:`sample-directive-opts A`.
+   :nosubcommands:
+   :index-groups: spam on a stick, ham in a cone

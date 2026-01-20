@@ -2,6 +2,33 @@
 Change log
 **********
 
+0.6.0
+#####
+
+The following enhancements to the HTML output are described on the :doc:`usage` page.
+
+* Optional command index.
+* Optional ``:index-groups:`` field to the directive for an command-by-group index.
+* A ``sphinxarg_full_subcommand_name`` option to print fully-qualified sub-command headings.
+  This option helps when more than one sub-command offers a ``create`` or ``list`` or other
+  repeated sub-command.
+* Each command heading is a domain-specific link target.
+  You can link to commands and sub-commands with the ``:ref:`` role, but this
+  release adds support for the domain-specific role like
+  ``:commands:command:`sample-directive-opts A` ``.
+  The ``:commands:command:`` role supports linking from other projects through the
+  intersphinx extension.
+
+Changes
+
+* Previously, common headings such as **Positional Arguments** were subject to a
+  process that made them unique by adding a ``_repeatX`` suffix to the HREF target.
+  This release continues to support those HREF targets as secondary targets so that
+  bookmarks continue to work.
+  However, this release prefers using fully-qualified HREF targets like
+  ``sample-directive-opts-positional-arguments`` as the primary HREF so that customers
+  are less likely to witness the ``_repeatX`` link in URLs.
+
 0.5.2
 #####
 

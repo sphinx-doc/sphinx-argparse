@@ -1,6 +1,5 @@
 """Test HTML output the same way that Sphinx does in test_build_html.py."""
 
-from itertools import chain, cycle
 from pathlib import Path
 
 import pytest
@@ -67,7 +66,3 @@ def cached_etree_parse():
 
     yield parse
     etree_cache.clear()
-
-
-def flat_dict(d):
-    return chain.from_iterable([zip(cycle([fname]), values) for fname, values in d.items()])
