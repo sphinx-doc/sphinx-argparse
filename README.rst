@@ -10,8 +10,8 @@
    :target: https://github.com/conda-forge/sphinx-argparse-feedstock/
    :alt: Conda version
 
-.. image:: https://github.com/sphinx-doc/sphinx/actions/workflows/main.yml/badge.svg
-   :target: https://github.com/sphinx-doc/sphinx/actions/workflows/main.yml
+.. image:: https://github.com/sphinx-doc/sphinx-argparse/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/sphinx-doc/sphinx-argparse/actions/workflows/ci.yml
    :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/sphinx-argparse/badge/?version=stable
