@@ -53,7 +53,7 @@ lint = [
 ]
 test = [
     "pytest>=8.0",
-    "coverage>=6.5",
+    "pytest-cov",
     "lxml>=4.9",
     "setuptools>=70.0",  # for Cython compilation
     "typing_extensions>=4.9",  # for typing_extensions.Unpack
