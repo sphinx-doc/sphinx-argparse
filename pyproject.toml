@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core>=3.7"]
+requires = ["flit_core >= 3.10, <4"]
 build-backend = "flit_core.buildapi"
 
 # project metadata
@@ -12,14 +12,14 @@ urls.Code = "https://github.com/sphinx-doc/sphinx-argparse/"
 urls.Download = "https://pypi.org/project/sphinx-argparse/"
 urls.Homepage = "https://sphinx-argparse.readthedocs.io/"
 urls."Issue tracker" = "https://github.com/sphinx-doc/sphinx-argparse/issues"
-license.text = "MIT"
+license = "MIT"
+license-files = ["LICENSE.rst"]
 requires-python = ">=3.10"
 
 # Classifiers list: https://pypi.org/classifiers/
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -72,7 +72,7 @@ name = "sphinxarg"
 
 [tool.flit.sdist]
 include = [
-    "LICENCE.rst",
+    "LICENSE.rst",
     # Documentation
     "docs/",
     # Tests
