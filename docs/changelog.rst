@@ -2,6 +2,13 @@
 Change log
 **********
 
+x.x.x
+#####
+
+Changes
+
+* The ``:filename:`` input is now resolved only to the ``conf.py`` directory (``srcdir`` in Sphinx)
+
 0.6.0
 #####
 
