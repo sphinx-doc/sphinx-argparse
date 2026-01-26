@@ -493,23 +493,23 @@ class ArgParseDirective(SphinxDirective):
         return content
 
     def _open_filename(self):
+        file = self.options['filename']
+
+        # If the provided path is not absolute, we consider it relative to the docs
+        # conf dir:
+        if not os.path.isabs(file):
+            file = os.path.join(self.env.srcdir, file)
+
         # try open with given path
         try:
-            return open(self.options['filename'])
+            return open(file)
         except OSError:
             pass
-        # try open with abspath
-        try:
-            return open(os.path.abspath(self.options['filename']))
-        except OSError:
-            pass
-        # try open with shutil which
-        try:
-            return open(shutil.which(self.options['filename']))
-        except (OSError, TypeError):
-            pass
-        # raise exception
-        raise FileNotFoundError(self.options['filename'])
+
+        raise FileNotFoundError(
+            f"Failed to find provided source file `{self.options['filename']}` "
+            f"(resolved to `{file}`)"
+        )
 
     def _print_subcommands(self, data, nested_content, markdown_help=False, settings=None):
         """
