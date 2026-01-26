@@ -7,9 +7,23 @@ from docutils import nodes
 from lxml import etree as lxmltree
 from sphinx.testing.util import SphinxTestApp
 
+from sphinxarg.ext import ArgParseDirective
+
 pytest_plugins = 'sphinx.testing.fixtures'
 
 etree_cache: dict[str, str] = {}
+
+
+@pytest.fixture(autouse=True)
+def mock_argparse_src_dir(monkeypatch):
+    """Fixture to mock the source root dir in `ArgParseDirective`.
+
+    Auto-used, i.e. applied to all tests by default.
+    Without this, the source .py files will be searched inside the pytest temp
+    directory, where our .py files won't be copied into.
+    """
+    tests_dir = Path(__file__).parent.absolute()
+    monkeypatch.setattr(ArgParseDirective, '_srcdir', str(tests_dir))
 
 
 @pytest.fixture(scope='session')
