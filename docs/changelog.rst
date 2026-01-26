@@ -2,13 +2,6 @@
 Change log
 **********
 
-x.x.x
-#####
-
-Changes
-
-* The ``:filename:`` input is now resolved only to the ``conf.py`` directory (``srcdir`` in Sphinx)
-
 0.6.0
 #####
 
@@ -35,6 +28,10 @@ Changes
   However, this release prefers using fully-qualified HREF targets like
   ``sample-directive-opts-positional-arguments`` as the primary HREF so that customers
   are less likely to witness the ``_repeatX`` link in URLs.
+* `#32 <https://github.com/sphinx-doc/sphinx-argparse/issues/32>`__ Argparse commands are now part of a Sphinx domain
+* `#72 <https://github.com/sphinx-doc/sphinx-argparse/issues/72>`__ Coloring in argparse output can be disabled (default)
+* `#87 <https://github.com/sphinx-doc/sphinx-argparse/issues/87>`__ The ``:filename:`` input is now resolved only to
+  the ``conf.py`` directory (``srcdir`` in Sphinx)
 
 0.5.2
 #####
