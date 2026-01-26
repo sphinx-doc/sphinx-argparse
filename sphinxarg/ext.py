@@ -513,13 +513,11 @@ class ArgParseDirective(SphinxDirective):
         try:
             return open(file)
         except OSError:
-            pass
-
-        msg = (
-            f'Failed to find provided source file `{self.options["filename"]}` '
-            f'(resolved to `{file}`)'
-        )
-        raise FileNotFoundError(msg)
+            msg = (
+                f'Failed to find provided source file `{self.options["filename"]}` '
+                f'(resolved to `{file}`)'
+            )
+            raise FileNotFoundError(msg) from None
 
     def _print_subcommands(self, data, nested_content, markdown_help=False, settings=None):
         """
