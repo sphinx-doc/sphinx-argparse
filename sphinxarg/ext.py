@@ -252,6 +252,8 @@ def print_subcommands(data, nested_content, markdown_help=False, settings=None):
                     desc.append(s)
                 elif classifier == '@before':
                     desc.insert(0, s)
+                elif classifier == '@skip':
+                    continue
 
             for element in render_list(desc, markdown_help):
                 sec += element
