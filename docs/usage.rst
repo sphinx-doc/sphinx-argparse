@@ -55,8 +55,8 @@ To document a file that is not part of a module, use :filename:
       :func: my_func_that_returns_a_parser
       :prog: script.py
 
-The 'filename' option could be absolute path or a relative path under current
-working dir.
+The 'filename' option can be an absolute path or a relative one.
+When a relative path is provided, the Sphinx ``srcdir`` will be taken as the base, which is the directory housing the active ``conf.py`` file.
 
 \:module\:
     Module name, where the function is located
