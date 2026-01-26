@@ -3,7 +3,6 @@ from __future__ import annotations
 import importlib
 import operator
 import os
-import shutil
 import sys
 from argparse import ArgumentParser
 from typing import TYPE_CHECKING, ClassVar, cast
@@ -492,13 +491,23 @@ class ArgParseDirective(SphinxDirective):
         self.state.nested_parse(StringList(text.split('\n')), 0, content)
         return content
 
+    @property
+    def _srcdir(self):
+        """Internal property for source root-dir.
+
+        This is a property such that we can easily mock it during tests.
+        """
+        return self.env.srcdir
+
     def _open_filename(self):
         file = self.options['filename']
 
         # If the provided path is not absolute, we consider it relative to the docs
         # conf dir:
         if not os.path.isabs(file):
-            file = os.path.join(self.env.srcdir, file)
+            file = os.path.realpath(
+                os.path.join(self._srcdir, file)
+            )  # Resolve things like ".." to make clear where we're searching
 
         # try open with given path
         try:
@@ -506,10 +515,11 @@ class ArgParseDirective(SphinxDirective):
         except OSError:
             pass
 
-        raise FileNotFoundError(
-            f"Failed to find provided source file `{self.options['filename']}` "
-            f"(resolved to `{file}`)"
+        msg = (
+            f'Failed to find provided source file `{self.options["filename"]}` '
+            f'(resolved to `{file}`)'
         )
+        raise FileNotFoundError(msg)
 
     def _print_subcommands(self, data, nested_content, markdown_help=False, settings=None):
         """
