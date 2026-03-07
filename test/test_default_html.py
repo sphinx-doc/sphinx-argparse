@@ -1,6 +1,7 @@
 """Test the HTML builder and check output against XPath."""
 
 import posixpath
+from typing import Any
 
 import pytest
 from sphinx.util.inventory import InventoryFile
@@ -90,8 +91,8 @@ def test_index_is_optional(app, cached_etree_parse):
     assert command_index_file.exists() is False
 
 
-def get_inv_command_uri(inv: dict, field: str) -> str:
-    command = inv.get('commands:command')
+def get_inv_command_uri(inv: dict[str, dict[str, Any]], field: str) -> str:
+    command = inv['commands:command']
     value = command.get(field, None)
     assert value is not None
     if isinstance(value, tuple):

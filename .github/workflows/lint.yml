@@ -38,9 +38,8 @@ jobs:
     - name: Format with Ruff
       run: ruff format . --diff
 
-#    - name: Type check with MyPy
-#      run: mypy
-# Skip MyPy check for now, see https://github.com/sphinx-doc/sphinx-argparse/issues/85
+    - name: Type check with MyPy
+      run: mypy
 
   twine:
     name: "Check packing with Twine"
