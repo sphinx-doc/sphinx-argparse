@@ -5,7 +5,7 @@ import operator
 import os
 import sys
 from argparse import ArgumentParser
-from typing import TYPE_CHECKING, ClassVar, cast
+from typing import TYPE_CHECKING, cast
 
 from docutils import nodes
 from docutils.frontend import get_default_settings
@@ -892,9 +892,7 @@ class ArgParseDomain(Domain):
         'command': XRefRole(),
     }
     indices = []
-    initial_data: ClassVar[
-        dict[str, list[_ObjectDescriptionTuple] | dict[str, list[_ObjectDescriptionTuple]]]
-    ] = {
+    initial_data = {
         'commands': [],
         'commands-by-group': {},
     }
