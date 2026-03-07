@@ -14,11 +14,16 @@ from docutils.parsers.rst.directives import flag, unchanged
 from docutils.statemachine import StringList
 from sphinx.domains import Domain, Index, IndexEntry
 from sphinx.errors import ExtensionError
-from sphinx.ext.autodoc import mock
 from sphinx.roles import XRefRole
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective, new_document
 from sphinx.util.nodes import make_id, make_refnode, nested_parse_with_titles
+
+try:
+    from sphinx.ext.autodoc.mock import mock
+except ImportError:
+    from sphinx.ext.autodoc import mock
+    # A persistent bug in sphinx / autodoc causes problems during importing (#82)
 
 from sphinxarg import __version__
 from sphinxarg.parser import parse_parser, parser_navigate
