@@ -825,7 +825,7 @@ class ArgParseDirective(SphinxDirective):
 
         usage = result['usage']
         if fromfile_prefix:
-            usage += ' [{}file]'.format(fromfile_prefix[0])
+            usage += f' [{fromfile_prefix[0]}file]'
         items.append(nodes.literal_block(text=usage))
 
         if len(fromfile_prefix) > 1:
@@ -833,7 +833,7 @@ class ArgParseDirective(SphinxDirective):
             for i, p in enumerate(fromfile_prefix):
                 if i > 0:
                     children.append(nodes.Text(' or '))
-                children.append(nodes.literal(text='{}file'.format(p)))
+                children.append(nodes.literal(text=f'{p}file'))
             children.append(nodes.Text('.'))
             items.append(nodes.paragraph('', '', *children))
 

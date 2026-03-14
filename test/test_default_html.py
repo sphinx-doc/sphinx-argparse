@@ -72,7 +72,10 @@ from test.utils.xpath import check_xpath
                 ('.//h2', 'Named Arguments'),
                 ('.//section/dl/dd/p', 'Default', False),
                 (".//div[@class='highlight']", r'\[=file\]'),
-                ('.//p', 'Additional arguments will be read from files passed as =file or @file.'),
+                (
+                    './/p',
+                    'Additional arguments will be read from files passed as =file or @file.',
+                ),
             ],
         ),
     ],
