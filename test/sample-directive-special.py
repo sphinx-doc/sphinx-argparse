@@ -5,6 +5,7 @@ def get_parser():
     parser = argparse.ArgumentParser(
         prog='sample-directive-special',
         description='Support SphinxArgParse HTML testing (with defaults)',
+        fromfile_prefix_chars='@',
     )
 
     parser.add_argument(

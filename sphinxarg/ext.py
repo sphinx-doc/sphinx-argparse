@@ -821,7 +821,11 @@ class ArgParseDirective(SphinxDirective):
         domain = cast('ArgParseDomain', self.env.get_domain(ArgParseDomain.name))
         domain.add_argparse_command(result, node_id, self.index_groups)
 
-        items.append(nodes.literal_block(text=result['usage']))
+        usage = result['usage']
+        if fromfile_prefix := result.get('fromfile_prefix_chars', ''):
+            usage += ' [{}file]'.format(fromfile_prefix[0])
+        items.append(nodes.literal_block(text=usage))
+
         items.extend(
             self._print_action_groups(
                 result,

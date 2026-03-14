@@ -1,4 +1,5 @@
 import re
+from lxml import etree as lxmletree
 
 
 def check_xpath(etree, fname, path, check, be_found=True):
@@ -16,12 +17,7 @@ def check_xpath(etree, fname, path, check, be_found=True):
     else:
 
         def get_text(node):
-            if node.text is not None:
-                # the node has only one text
-                return node.text
-            else:
-                # the node has tags and text; gather texts just under the node
-                return ''.join(n.tail or '' for n in node)
+            return lxmletree.tostring(node, encoding='unicode', method='text')
 
         rex = re.compile(check)
         if be_found:

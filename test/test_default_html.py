@@ -60,6 +60,7 @@ from test.utils.xpath import check_xpath
                 ('.//section/dl/dd/p/code/span', '420'),
                 ('.//section/dl/dd/p/code/span', "'*.rst"),
                 ('.//section/dl/dd/p/code/span', r"\['\*.rst',"),
+                (".//div[@class='highlight']", r'\[@file\]'),
             ],
         ),
         (
