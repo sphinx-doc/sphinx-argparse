@@ -30,8 +30,10 @@ Changes
   are less likely to witness the ``_repeatX`` link in URLs.
 * `#32 <https://github.com/sphinx-doc/sphinx-argparse/issues/32>`__ Argparse commands are now part of a Sphinx domain
 * `#72 <https://github.com/sphinx-doc/sphinx-argparse/issues/72>`__ Coloring in argparse output can be disabled (default)
-* `#87 <https://github.com/sphinx-doc/sphinx-argparse/issues/87>`__ The ``:filename:`` input is now resolved only to
-  the ``conf.py`` directory (``srcdir`` in Sphinx)
+* `#87 <https://github.com/sphinx-doc/sphinx-argparse/issues/87>`__ The ``:filename:`` input is now resolved only to the
+  ``conf.py`` directory (``srcdir`` in Sphinx)
+* `#89 <https://github.com/sphinx-doc/sphinx-argparse/pull/89>`__ Changed the way `mock` from `autodoc` is important to
+  work around a persistent Sphinx bug
 
 0.5.2
 #####
