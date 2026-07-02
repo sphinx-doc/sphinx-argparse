@@ -910,6 +910,36 @@ class ArgParseDomain(Domain):
     def get_objects(self) -> Iterable[_ObjectDescriptionTuple]:
         yield from self.data['commands']
 
+    def clear_doc(self, docname: str) -> None:
+        """Remove traces of a document in the domain-specific inventories."""
+        self.data['commands'] = [
+            entry for entry in self.data['commands'] if entry[3] != docname
+        ]
+        commands_by_group: dict[str, list[_ObjectDescriptionTuple]]
+        commands_by_group = self.data['commands-by-group']
+        for group in list(commands_by_group):
+            entries = [e for e in commands_by_group[group] if e[3] != docname]
+            if entries:
+                commands_by_group[group] = entries
+            else:
+                del commands_by_group[group]
+
+    def merge_domaindata(self, docnames: Iterable[str], otherdata: dict) -> None:
+        """Merge in data regarding *docnames* from a different domaindata
+        inventory (coming from a subprocess in parallel builds).
+        """
+        docnames = set(docnames)
+        # No need to check for duplicates: each docname is only ever merged
+        # once, from the single worker process that read it.
+        for entry in otherdata['commands']:
+            if entry[3] in docnames:
+                self.data['commands'].append(entry)
+        for group, entries in otherdata['commands-by-group'].items():
+            merged = self.data['commands-by-group'].setdefault(group, [])
+            for entry in entries:
+                if entry[3] in docnames:
+                    merged.append(entry)
+
     def resolve_xref(
         self,
         env: BuildEnvironment,
