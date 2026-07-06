@@ -71,6 +71,28 @@ from test.utils.xpath import check_xpath
                 ('.//section/dl/dd/p', 'Default', False),
             ],
         ),
+        (
+            'smartquotes.html',
+            [
+                ('.//h1', 'Smart quotes'),
+                # option names in parser-supplied text keep their double
+                # hyphen: smart quotes must not turn them into an en dash
+                ('.//p/span', '--text'),
+                ('.//p/span', '--2fa'),
+                ('.//p/span', '--dry_run'),
+                ('.//section/dl/dd/p/span', '--output'),
+                ('.//p', '–text', False),
+                ('.//p', '–2fa', False),
+                ('.//p', '–dry_run', False),
+                ('.//section/dl/dd/p', '–output', False),
+                # the surrounding text keeps normal typography
+                ('.//section/dl/dd/p', 'to ‘single’ and “double” quotes'),
+                ('.//section/dl/dd/p', 'the east–west mid-word dash'),
+                ('.//section/dl/dd/p', 'ranges like 10–20'),
+                # as does prose from the directive body
+                ('.//p', 'keeps typography – an en dash'),
+            ],
+        ),
     ],
 )
 @pytest.mark.sphinx('html', testroot='default-html')

@@ -30,14 +30,8 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"test/sample-default-supressed.py" = [
-    "N999",  # invalid module name
-]
-"test/sample-directive-opts.py" = [
-    "N999",  # invalid module name
-]
-"test/sample-directive-special.py" = [
-    "N999",  # invalid module name
+"test/sample-*.py" = [
+    "N999",  # invalid module name (dashes in filename)
 ]
 
 [format]
