@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib
 import operator
 import os
+import re
 import sys
 from argparse import ArgumentParser
 from typing import TYPE_CHECKING, cast
@@ -33,7 +34,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
     from pathlib import Path
 
-    from docutils.nodes import Element
+    from docutils.nodes import Element, Node
     from sphinx.addnodes import pending_xref
     from sphinx.application import Sphinx
     from sphinx.builders import Builder
@@ -87,6 +88,47 @@ def map_nested_definitions(nested_content):
     return definitions
 
 
+_OPTION_TOKEN = re.compile(r'((?<!\w)--[a-zA-Z0-9][\w-]*)')
+
+
+def _protect_option_dashes(children: list[Node]) -> None:
+    """Shield ``--option`` tokens from smart quotes rewriting ``--`` as an en dash.
+
+    Mutates the tree under ``children`` in place. Each token is wrapped in an
+    unstyled inline exempted via ``support_smartquotes``.
+    """
+    for child in children:
+        if not isinstance(child, nodes.Element):
+            continue
+        for text in list(child.findall(nodes.Text)):
+            parent = text.parent
+            if isinstance(parent, nodes.literal | nodes.FixedTextElement):
+                continue
+            # Capturing group => split() yields the option tokens at odd
+            # indices, interleaved with the surrounding text.
+            parts = _OPTION_TOKEN.split(text)
+            if len(parts) == 1:
+                continue
+            replacement: list[Node] = []
+            for i, part in enumerate(parts):
+                if not part:
+                    continue
+                if i % 2:
+                    inline = nodes.inline('', part)
+                    inline['support_smartquotes'] = False
+                    replacement.append(inline)
+                else:
+                    replacement.append(nodes.Text(part))
+            parent.replace(text, replacement)
+
+
+def _option_safe_paragraph(text: str) -> nodes.paragraph:
+    """Return a paragraph of parser-supplied text with option dashes protected."""
+    paragraph = nodes.paragraph(text=text)
+    _protect_option_dashes([paragraph])
+    return paragraph
+
+
 def render_list(l, markdown_help, settings=None):
     """
     Given a list of reStructuredText or MarkDown sections, return a docutils node list
@@ -96,7 +138,9 @@ def render_list(l, markdown_help, settings=None):
     if markdown_help:
         from sphinxarg.markdown import parse_markdown_block
 
-        return parse_markdown_block('\n\n'.join(l) + '\n')
+        blocks = parse_markdown_block('\n\n'.join(l) + '\n')
+        _protect_option_dashes(blocks)
+        return blocks
     else:
         if settings is None:
             settings = get_default_settings(Parser)
@@ -105,6 +149,7 @@ def render_list(l, markdown_help, settings=None):
             if isinstance(element, str):
                 document = new_document('', settings)
                 Parser().parse(element + '\n', document)
+                _protect_option_dashes(document.children)
                 all_children += document.children
             elif isinstance(element, nodes.definition):
                 all_children += element
@@ -355,8 +400,8 @@ class ArgParseDirective(SphinxDirective):
             description_section = nodes.section(
                 '',
                 nodes.title(text='Description'),
-                nodes.paragraph(
-                    text=parser_info.get(
+                _option_safe_paragraph(
+                    parser_info.get(
                         'description',
                         parser_info.get('help', 'undocumented').capitalize(),
                     )
@@ -371,9 +416,9 @@ class ArgParseDirective(SphinxDirective):
             # parse method invoked above seem to be able to do this but
             # I haven't found a way to do it for arbitrary text
             if description_section:
-                description_section += nodes.paragraph(text=parser_info['epilog'])
+                description_section += _option_safe_paragraph(parser_info['epilog'])
             else:
-                description_section = nodes.paragraph(text=parser_info['epilog'])
+                description_section = _option_safe_paragraph(parser_info['epilog'])
                 items.append(description_section)
         # OPTIONS section
         options_section = nodes.section(
@@ -425,12 +470,12 @@ class ArgParseDirective(SphinxDirective):
         for arg in parser_info['args']:
             arg_items = []
             if arg['help']:
-                arg_items.append(nodes.paragraph(text=arg['help']))
+                arg_items.append(_option_safe_paragraph(arg['help']))
             elif 'choices' not in arg:
                 arg_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
                 arg_items.append(
-                    nodes.paragraph(text='Possible choices: ' + ', '.join(arg['choices']))
+                    _option_safe_paragraph('Possible choices: ' + ', '.join(arg['choices']))
                 )
             items.append(
                 nodes.option_list_item(
@@ -457,12 +502,12 @@ class ArgParseDirective(SphinxDirective):
                     )
                 names.append(nodes.option('', *option_declaration))
             if opt['help']:
-                opt_items.append(nodes.paragraph(text=opt['help']))
+                opt_items.append(_option_safe_paragraph(opt['help']))
             elif 'choices' not in opt:
                 opt_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
                 opt_items.append(
-                    nodes.paragraph(text='Possible choices: ' + ', '.join(opt['choices']))
+                    _option_safe_paragraph('Possible choices: ' + ', '.join(opt['choices']))
                 )
             items.append(
                 nodes.option_list_item(
@@ -479,7 +524,7 @@ class ArgParseDirective(SphinxDirective):
         for subcmd in parser_info['children']:
             subcmd_items = []
             if subcmd['help']:
-                subcmd_items.append(nodes.paragraph(text=subcmd['help']))
+                subcmd_items.append(_option_safe_paragraph(subcmd['help']))
             else:
                 subcmd_items.append(nodes.paragraph(text='Undocumented'))
             items.append(
@@ -494,6 +539,7 @@ class ArgParseDirective(SphinxDirective):
     def _nested_parse_paragraph(self, text):
         content = nodes.paragraph()
         self.state.nested_parse(StringList(text.split('\n')), 0, content)
+        _protect_option_dashes([content])
         return content
 
     @property
