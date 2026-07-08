@@ -76,6 +76,7 @@ def parse_parser(parser, data=None, **kwargs):
         }
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
+    _try_add_parser_attribute(data, parser, 'fromfile_prefix_chars')
     for action in parser._get_positional_actions():
         if not isinstance(action, _SubParsersAction):
             continue

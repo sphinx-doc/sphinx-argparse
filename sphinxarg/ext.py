@@ -826,7 +826,22 @@ class ArgParseDirective(SphinxDirective):
         domain = cast('ArgParseDomain', self.env.get_domain(ArgParseDomain.name))
         domain.add_argparse_command(result, node_id, self.index_groups)
 
-        items.append(nodes.literal_block(text=result['usage']))
+        fromfile_prefix = result.get('fromfile_prefix_chars', '')
+
+        usage = result['usage']
+        if fromfile_prefix:
+            usage += f' [{fromfile_prefix[0]}file]'
+        items.append(nodes.literal_block(text=usage))
+
+        if len(fromfile_prefix) > 1:
+            children = [nodes.Text('Additional arguments will be read from files passed as ')]
+            for i, p in enumerate(fromfile_prefix):
+                if i > 0:
+                    children.append(nodes.Text(' or '))
+                children.append(nodes.literal(text=f'{p}file'))
+            children.append(nodes.Text('.'))
+            items.append(nodes.paragraph('', '', *children))
+
         items.extend(
             self._print_action_groups(
                 result,
