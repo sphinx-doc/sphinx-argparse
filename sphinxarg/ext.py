@@ -40,6 +40,7 @@ if TYPE_CHECKING:
     from sphinx.environment import BuildEnvironment
 
     _ObjectDescriptionTuple = tuple[str, str, str, str, str, int]
+    _ObjectDescriptionList = list[_ObjectDescriptionTuple]
 
 logger = logging.getLogger(__name__)
 
@@ -911,22 +912,29 @@ class ArgParseDomain(Domain):
         yield from self.data['commands']
 
     def clear_doc(self, docname: str) -> None:
-        """Remove traces of a document in the domain-specific inventories."""
-        self.data['commands'] = [
-            entry for entry in self.data['commands'] if entry[3] != docname
-        ]
-        commands_by_group: dict[str, list[_ObjectDescriptionTuple]]
-        commands_by_group = self.data['commands-by-group']
-        for group in list(commands_by_group):
-            entries = [e for e in commands_by_group[group] if e[3] != docname]
+        """Remove traces of a document in the domain-specific inventories.
+
+        :param docname: Name of the document for which we need to clear cache.
+        """
+
+        def keep_by_docname(entries_: _ObjectDescriptionList) -> _ObjectDescriptionList:
+            """Remove entries for this particular docname from an array."""
+            return [entry for entry in entries_ if entry[3] != docname]
+
+        self.data['commands'] = keep_by_docname(self.data['commands'])
+
+        commands_by_group: dict[str, _ObjectDescriptionList] = self.data['commands-by-group']
+        for group in list(commands_by_group):  # Iterate over keys list as we modify the dict
+            entries = keep_by_docname(commands_by_group[group])
             if entries:
                 commands_by_group[group] = entries
             else:
                 del commands_by_group[group]
 
     def merge_domaindata(self, docnames: Iterable[str], otherdata: dict) -> None:
-        """Merge in data regarding *docnames* from a different domaindata
-        inventory (coming from a subprocess in parallel builds).
+        """Merge in data regarding *docnames* from a different domaindata inventory
+
+        This is coming from a subprocess in parallel builds.
         """
         docnames = set(docnames)
         # No need to check for duplicates: each docname is only ever merged
