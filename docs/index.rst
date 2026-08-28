@@ -76,5 +76,13 @@ Don't forget to run tests before committing:
 Similar projects
 -------------------
 
-* https://pypi.org/project/sphinxcontrib-autoprogram/
-  (See a comparison: https://github.com/sphinx-doc/sphinx-argparse/issues/16)
+* `<https://github.com/tox-dev/sphinx-argparse-cli>`_
+
+  A different ``argparse``-to-docs converter released in 2021, with a
+  similar result as ``sphinx-argparse`` but with very different workings.
+  The project is still actively being developed by the Tox team.
+  This discussion highlights the difference: `<https://github.com/tox-dev/sphinx-argparse-cli/discussions/262>`_
+
+* `<https://github.com/sphinx-contrib/autoprogram>`_
+
+  A predecessor to ``sphinx-argparse``, released in 2014 but not updated since 2024.
