@@ -60,6 +60,8 @@ from test.utils.xpath import check_xpath
                 ('.//section/dl/dd/p/code/span', '420'),
                 ('.//section/dl/dd/p/code/span', "'*.rst"),
                 ('.//section/dl/dd/p/code/span', r"\['\*.rst',"),
+                (".//div[@class='highlight']", r'\[@file\]'),
+                ('.//p', 'Additional arguments will be read from files', False),
             ],
         ),
         (
@@ -69,6 +71,11 @@ from test.utils.xpath import check_xpath
                 ('.//h1', 'Default suppressed'),
                 ('.//h2', 'Named Arguments'),
                 ('.//section/dl/dd/p', 'Default', False),
+                (".//div[@class='highlight']", r'\[=file\]'),
+                (
+                    './/p',
+                    'Additional arguments will be read from files passed as =file or @file.',
+                ),
             ],
         ),
     ],
