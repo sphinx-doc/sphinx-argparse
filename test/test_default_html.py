@@ -71,6 +71,51 @@ from test.utils.xpath import check_xpath
                 ('.//section/dl/dd/p', 'Default', False),
             ],
         ),
+        (
+            'inside-class.html',
+            [
+                (
+                    ".//section[@id='argparse-inside-class-foo']/h1",
+                    'Argparse inside class Foo',
+                ),
+                (
+                    ".//section[@id='argparse-inside-class-foo']//div[@class='highlight']//span",
+                    'usage',
+                ),
+                (
+                    ".//section[@id='sample-inside-class-foo-named-arguments']/h2",
+                    'Named Arguments',
+                ),
+                (
+                    ".//section[@id='sample-inside-class-foo-named-arguments']/dl/dt[1]/kbd",
+                    '--foo-arg1',
+                ),
+                (
+                    ".//section[@id='sample-inside-class-foo-named-arguments']/dl/dt[2]/kbd",
+                    '--foo-arg2',
+                ),
+                (
+                    ".//section[@id='argparse-inside-class-foo-bar']/h1",
+                    'Argparse inside class Foo.Bar',
+                ),
+                (
+                    ".//section[@id='argparse-inside-class-foo-bar']//div[@class='highlight']//span",
+                    'usage',
+                ),
+                (
+                    ".//section[@id='sample-inside-class-foo-bar-named-arguments']/h2",
+                    'Named Arguments',
+                ),
+                (
+                    ".//section[@id='sample-inside-class-foo-bar-named-arguments']/dl/dt[1]/kbd",
+                    '--foo-bar-arg1',
+                ),
+                (
+                    ".//section[@id='sample-inside-class-foo-bar-named-arguments']/dl/dt[2]/kbd",
+                    '--foo-bar-arg2',
+                ),
+            ],
+        ),
     ],
 )
 @pytest.mark.sphinx('html', testroot='default-html')
