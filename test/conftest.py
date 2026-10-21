@@ -71,7 +71,7 @@ def cached_etree_parse():
     def parse(fname):
         if fname in etree_cache:
             return etree_cache[fname]
-        with (fname).open('r') as fp:
+        with (fname).open('r', encoding='utf-8') as fp:
             data = fp.read().replace('\n', '')
             etree = lxmltree.HTML(data)
             etree_cache.clear()

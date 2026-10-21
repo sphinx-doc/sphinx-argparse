@@ -71,6 +71,51 @@ from test.utils.xpath import check_xpath
                 ('.//section/dl/dd/p', 'Default', False),
             ],
         ),
+        (
+            'smartquotes.html',
+            [
+                ('.//h1', 'Smart quotes'),
+                # Option mentions in the description, help, epilog and sub-command
+                # help keep both hyphens instead of becoming an en dash (#100)...
+                ('.//p/span', '--input'),
+                ('.//p/span', '--output'),
+                ('.//p/span', '--verbose'),
+                ('.//p/span', '--quiet'),
+                (".//*[contains(., '–input')]", None),
+                (".//*[contains(., '–output')]", None),
+                (".//*[contains(., '–verbose')]", None),
+                (".//*[contains(., '–quiet')]", None),
+                # ...inline literals are not wrapped a second time...
+                ('.//p/code/span', '--mode'),
+                ('.//p/code/span/span', None),
+                # ...and the surrounding prose keeps its typography.
+                (".//p[contains(., '“like these”')]", ''),
+                (".//p[contains(., 'dash – like this –')]", ''),
+                (".//p[contains(., 'east–west')]", ''),
+                # Text written in the directive body is reST and is left alone.
+                ('.//p', 'keeps typography – an en dash'),
+            ],
+        ),
+        (
+            'smartquotes-manpage.html',
+            [
+                ('.//h1', 'Smart quotes in manpage mode'),
+                ('.//h2', 'Description'),
+                ('.//section/p/span', '--input'),
+                ('.//section/p/span', '--verbose'),
+                ('.//dd/p/span', '--output'),
+                (".//dd/p[contains(., 'honouring')]/span", '--input'),
+                ('.//dd/p', 'Possible choices: copy, move'),
+                # The sub-command usage line is command-line syntax throughout.
+                ('.//dt/strong', r'run \[-h\] \[--fast\]'),
+                (".//*[contains(., '–input')]", None),
+                (".//*[contains(., '–output')]", None),
+                (".//*[contains(., '–verbose')]", None),
+                (".//*[contains(., '–fast')]", None),
+                (".//p[contains(., '“like these”')]", ''),
+                (".//p[contains(., 'east–west')]", ''),
+            ],
+        ),
     ],
 )
 @pytest.mark.sphinx('html', testroot='default-html')
