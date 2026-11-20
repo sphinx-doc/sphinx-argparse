@@ -54,6 +54,27 @@ def _format_usage_without_prefix(parser):
     return fmt.format_help().strip()
 
 
+def _get_subparsers_prog(parser, action):
+    """
+    Get the prog prefix for the subcommands of ``parser``.
+
+    This mirrors what ``ArgumentParser.add_subparsers`` does: the parser's
+    prog, followed by the positional arguments that precede the subcommands.
+    """
+    fmt = parser._get_formatter()
+    if hasattr(fmt, '_set_color'):
+        # Avoid storing ANSI codes in the prog (argparse does the same).
+        fmt._set_color(False)
+    positionals = parser._get_positional_actions()
+    fmt.add_usage(
+        parser.usage,
+        positionals[: positionals.index(action)],
+        parser._mutually_exclusive_groups,
+        prefix='',
+    )
+    return fmt.format_help().strip()
+
+
 def parse_parser(parser, data=None, **kwargs):
     """Take data from argparse argument parser.
 
@@ -79,6 +100,7 @@ def parse_parser(parser, data=None, **kwargs):
     for action in parser._get_positional_actions():
         if not isinstance(action, _SubParsersAction):
             continue
+        subparsers_prog = _get_subparsers_prog(parser, action)
         helps = {}
         for item in action._choices_actions:
             helps[item.dest] = item.help
@@ -103,7 +125,7 @@ def parse_parser(parser, data=None, **kwargs):
                 # Color is not inherited, must be set again
 
             subalias = subsection_alias[subaction]
-            subaction.prog = f'{parser.prog} {name}'
+            subaction.prog = f'{subparsers_prog} {name}'
             subdata = {
                 'name': name if not subalias else f'{name} ({", ".join(subalias)})',
                 'help': helps.get(name, ''),
