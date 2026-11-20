@@ -122,8 +122,8 @@ def test_parse_nested():
         {
             'name': 'install',
             'help': 'install help',
-            'usage': 'usage: under-test install [-h] [--upgrade] ref',
-            'bare_usage': 'under-test install [-h] [--upgrade] ref',
+            'usage': 'usage: under-test foo bar install [-h] [--upgrade] ref',
+            'bare_usage': 'under-test foo bar install [-h] [--upgrade] ref',
             'action_groups': [
                 {
                     'title': 'Positional Arguments',
@@ -169,8 +169,8 @@ def test_parse_nested_with_alias():
             'name': 'install (i)',
             'identifier': 'install',
             'help': 'install help',
-            'usage': 'usage: under-test install [-h] [--upgrade] ref',
-            'bare_usage': 'under-test install [-h] [--upgrade] ref',
+            'usage': 'usage: under-test foo bar install [-h] [--upgrade] ref',
+            'bare_usage': 'under-test foo bar install [-h] [--upgrade] ref',
             'action_groups': [
                 {
                     'title': 'Positional Arguments',
